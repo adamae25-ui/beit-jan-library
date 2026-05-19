@@ -1,0 +1,2039 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beit Jan Smart Library – Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Hebrew:wght@400;600;700&family=Noto+Sans+Hebrew:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FAF6F0;
+  --surface: #FFFFFF;
+  --surface2: #F5EFE6;
+  --border: #DDD0BC;
+  --primary: #6B4226;
+  --primary-light: #8B5E3C;
+  --primary-pale: #F0E6D8;
+  --accent: #C8773A;
+  --accent-light: #E8A06A;
+  --text: #2C1A0E;
+  --text2: #6B5040;
+  --text3: #9C8070;
+  --success: #3A7A52;
+  --success-bg: #E8F5EE;
+  --danger: #B03030;
+  --danger-bg: #FAEAEA;
+  --warning: #8A6A10;
+  --warning-bg: #FDF5DC;
+  --info: #2A5F8A;
+  --info-bg: #E5F0FA;
+  --radius: 10px;
+  --radius-sm: 6px;
+  --shadow: 0 2px 12px rgba(107,66,38,0.10);
+  --shadow-md: 0 4px 24px rgba(107,66,38,0.15);
+  --font-head: 'Noto Serif Hebrew', serif;
+  --font-body: 'Noto Sans Hebrew', sans-serif;
+  --sidebar-w: 220px;
+  --header-h: 60px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-body); background: var(--bg); color: var(--text); font-size: 14px; min-height: 100vh; }
+
+/* ── SCREEN SYSTEM ── */
+.screen { display: none; min-height: 100vh; }
+.screen.active { display: flex; flex-direction: column; }
+.screen.full { display: none; min-height: 100vh; align-items: center; justify-content: center; background: var(--bg); }
+.screen.full.active { display: flex; }
+
+/* ── APP SHELL ── */
+.shell { display: flex; min-height: 100vh; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: var(--sidebar-w); background: var(--primary); color: #fff;
+  display: flex; flex-direction: column; position: fixed; top: 0; right: 0;
+  height: 100vh; z-index: 100; overflow-y: auto;
+}
+.sidebar-logo {
+  padding: 20px 16px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+}
+.sidebar-logo h1 { font-family: var(--font-head); font-size: 15px; font-weight: 700; line-height: 1.3; }
+.sidebar-logo p { font-size: 11px; opacity: 0.6; margin-top: 3px; }
+.sidebar-user {
+  padding: 12px 16px; background: rgba(255,255,255,0.08);
+  border-bottom: 1px solid rgba(255,255,255,0.10);
+  font-size: 12px;
+}
+.sidebar-user .role { font-weight: 600; font-size: 13px; }
+.sidebar-user .name { opacity: 0.7; margin-top: 2px; }
+.nav-section { padding: 10px 0; }
+.nav-label { font-size: 10px; letter-spacing: 1px; opacity: 0.45; padding: 6px 16px 4px; text-transform: uppercase; }
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 16px; cursor: pointer; font-size: 13px;
+  transition: background 0.15s; border-right: 3px solid transparent;
+  opacity: 0.8;
+}
+.nav-item:hover { background: rgba(255,255,255,0.08); opacity: 1; }
+.nav-item.active { background: rgba(255,255,255,0.14); border-right-color: var(--accent-light); opacity: 1; font-weight: 600; }
+.nav-item .icon { font-size: 16px; width: 20px; text-align: center; }
+.sidebar-footer { margin-top: auto; padding: 14px 16px; border-top: 1px solid rgba(255,255,255,0.10); }
+.btn-logout { width: 100%; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 8px 12px; border-radius: var(--radius-sm); cursor: pointer; font-family: var(--font-body); font-size: 12px; }
+.btn-logout:hover { background: rgba(255,255,255,0.15); }
+
+/* ── MAIN CONTENT ── */
+.main { margin-right: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+.topbar {
+  height: var(--header-h); background: var(--surface); border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; position: sticky; top: 0; z-index: 50; box-shadow: var(--shadow);
+}
+.topbar-title { font-family: var(--font-head); font-size: 16px; font-weight: 700; color: var(--primary); }
+.topbar-actions { display: flex; align-items: center; gap: 10px; }
+.lang-btn { background: var(--primary-pale); border: 1px solid var(--border); color: var(--primary); padding: 5px 12px; border-radius: 20px; cursor: pointer; font-size: 12px; font-family: var(--font-body); }
+.lang-btn:hover { background: var(--primary); color: #fff; }
+.content { flex: 1; padding: 24px; overflow-y: auto; }
+
+/* ── COMPONENTS ── */
+.page-header { margin-bottom: 20px; }
+.page-header h2 { font-family: var(--font-head); font-size: 20px; color: var(--primary); }
+.page-header p { color: var(--text3); font-size: 13px; margin-top: 4px; }
+
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
+.card-title { font-family: var(--font-head); font-size: 15px; font-weight: 700; color: var(--primary); margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+
+.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; text-align: center; box-shadow: var(--shadow); cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; }
+.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.stat-card .stat-icon { font-size: 28px; margin-bottom: 8px; }
+.stat-card .stat-num { font-family: var(--font-head); font-size: 28px; font-weight: 700; color: var(--primary); }
+.stat-card .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+.stat-card.accent .stat-num { color: var(--accent); }
+.stat-card.danger .stat-num { color: var(--danger); }
+.stat-card.success .stat-num { color: var(--success); }
+
+.badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+.badge.success { background: var(--success-bg); color: var(--success); }
+.badge.danger { background: var(--danger-bg); color: var(--danger); }
+.badge.warning { background: var(--warning-bg); color: var(--warning); }
+.badge.info { background: var(--info-bg); color: var(--info); }
+.badge.neutral { background: var(--surface2); color: var(--text2); }
+
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: var(--radius-sm); border: none; cursor: pointer; font-family: var(--font-body); font-size: 13px; font-weight: 600; transition: all 0.15s; }
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-light); }
+.btn-accent { background: var(--accent); color: #fff; }
+.btn-accent:hover { background: var(--accent-light); }
+.btn-outline { background: transparent; border: 1.5px solid var(--primary); color: var(--primary); }
+.btn-outline:hover { background: var(--primary-pale); }
+.btn-danger { background: var(--danger); color: #fff; }
+.btn-success { background: var(--success); color: #fff; }
+.btn-sm { padding: 5px 12px; font-size: 12px; }
+.btn-lg { padding: 12px 28px; font-size: 15px; }
+
+.form-group { margin-bottom: 16px; }
+.form-label { display: block; font-size: 12px; font-weight: 600; color: var(--text2); margin-bottom: 6px; }
+.form-control { width: 100%; padding: 9px 12px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-family: var(--font-body); font-size: 13px; background: var(--surface); color: var(--text); transition: border-color 0.15s; }
+.form-control:focus { outline: none; border-color: var(--accent); }
+.form-control::placeholder { color: var(--text3); }
+select.form-control { cursor: pointer; }
+
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th { background: var(--surface2); color: var(--text2); font-size: 12px; font-weight: 600; padding: 10px 12px; text-align: right; border-bottom: 1.5px solid var(--border); }
+td { padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: middle; }
+tr:hover td { background: var(--primary-pale); }
+tr:last-child td { border-bottom: none; }
+
+.alert { padding: 12px 16px; border-radius: var(--radius-sm); font-size: 13px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+.alert.success { background: var(--success-bg); color: var(--success); border: 1px solid #b5dfc6; }
+.alert.danger { background: var(--danger-bg); color: var(--danger); border: 1px solid #f0b8b8; }
+.alert.warning { background: var(--warning-bg); color: var(--warning); border: 1px solid #e8d580; }
+.alert.info { background: var(--info-bg); color: var(--info); border: 1px solid #b0cfe8; }
+
+.steps { display: flex; align-items: center; gap: 0; margin-bottom: 24px; }
+.step { display: flex; align-items: center; gap: 8px; flex: 1; }
+.step-circle { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; background: var(--border); color: var(--text3); flex-shrink: 0; }
+.step.done .step-circle { background: var(--success); color: #fff; }
+.step.active .step-circle { background: var(--accent); color: #fff; }
+.step-label { font-size: 12px; color: var(--text3); }
+.step.active .step-label { color: var(--accent); font-weight: 600; }
+.step.done .step-label { color: var(--success); }
+.step-line { flex: 1; height: 2px; background: var(--border); margin: 0 6px; }
+.step.done + .step-line { background: var(--success); }
+
+.note-box { background: var(--info-bg); border: 1px solid #b0cfe8; border-radius: var(--radius-sm); padding: 12px 14px; font-size: 12px; color: var(--info); margin-bottom: 16px; }
+.note-box strong { font-weight: 700; }
+
+.search-bar { display: flex; gap: 8px; margin-bottom: 16px; }
+.search-bar .form-control { flex: 1; }
+
+.divider { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
+
+.actions-row { display: flex; gap: 8px; align-items: center; justify-content: flex-start; flex-wrap: wrap; margin-top: 16px; }
+
+/* ── LOGIN SCREEN ── */
+.login-page { min-height: 100vh; background: var(--bg); display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 20px; }
+.login-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 40px 36px; max-width: 420px; width: 100%; box-shadow: var(--shadow-md); }
+.login-logo { text-align: center; margin-bottom: 28px; }
+.login-logo .icon { font-size: 48px; margin-bottom: 10px; }
+.login-logo h1 { font-family: var(--font-head); font-size: 22px; color: var(--primary); }
+.login-logo p { font-size: 12px; color: var(--text3); margin-top: 4px; }
+.role-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 18px 0; }
+.role-btn { background: var(--surface2); border: 2px solid var(--border); border-radius: var(--radius); padding: 14px 8px; text-align: center; cursor: pointer; transition: all 0.18s; }
+.role-btn:hover, .role-btn.selected { border-color: var(--accent); background: var(--primary-pale); }
+.role-btn .role-icon { font-size: 24px; margin-bottom: 6px; }
+.role-btn .role-name { font-size: 12px; font-weight: 600; color: var(--primary); }
+
+/* ── REPORT CARD ── */
+.report-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+.report-header { background: var(--primary); color: #fff; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; }
+.report-header h3 { font-family: var(--font-head); font-size: 15px; }
+.report-body { padding: 16px 20px; }
+.report-meta { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; color: var(--text3); margin-bottom: 14px; }
+
+/* ── BOOK CARD ── */
+.book-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; display: flex; gap: 12px; align-items: flex-start; box-shadow: var(--shadow); cursor: pointer; transition: all 0.15s; }
+.book-card:hover { border-color: var(--accent); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.book-cover { width: 48px; height: 64px; background: var(--accent); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+.book-info h4 { font-weight: 700; font-size: 13px; color: var(--primary); margin-bottom: 3px; }
+.book-info p { font-size: 11px; color: var(--text3); margin-bottom: 5px; }
+
+/* Quick nav bar at bottom of content */
+.screen-nav { background: var(--surface); border-top: 1px solid var(--border); padding: 12px 24px; display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* ── BREADCRUMB ── */
+.breadcrumb { font-size: 12px; color: var(--text3); margin-bottom: 14px; display: flex; align-items: center; gap: 6px; }
+.breadcrumb span { color: var(--text3); }
+.breadcrumb .sep { opacity: 0.4; }
+.breadcrumb .current { color: var(--primary); font-weight: 600; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .sidebar { width: 180px; }
+  .main { margin-right: 180px; }
+  .grid-3, .grid-4 { grid-template-columns: 1fr 1fr; }
+  .grid-2 { grid-template-columns: 1fr; }
+  .role-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 520px) {
+  .sidebar { display: none; }
+  .main { margin-right: 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════
+     SCREEN 0: LOGIN
+══════════════════════════════════ -->
+<div class="screen full active" id="s0">
+  <div class="login-page">
+    <div class="login-card">
+      <div class="login-logo">
+        <div class="icon">📚</div>
+        <h1>Beit Jan Smart Library</h1>
+        <p>מערכת ניהול ספריית תיכון בית ג'ן</p>
+      </div>
+      <div class="note-box">
+        <strong>📋 הערת מסך:</strong> מסך כניסה – המשתמש בוחר תפקיד ומזין פרטים. הדרישות: 1.7.1.1 (זיהוי משתמש), אבטחה – שם משתמש + סיסמה בלבד.
+      </div>
+      <div class="form-group">
+        <label class="form-label">שם משתמש</label>
+        <input class="form-control" type="text" placeholder="הזן שם משתמש..." value="siham.atila">
+      </div>
+      <div class="form-group">
+        <label class="form-label">סיסמה</label>
+        <input class="form-control" type="password" placeholder="הזן סיסמה..." value="••••••••">
+      </div>
+      <div style="margin-bottom:14px">
+        <label class="form-label">כניסה כ:</label>
+        <div class="role-grid">
+          <div class="role-btn selected" onclick="selectRole(this,'librarian')">
+            <div class="role-icon">👩‍💼</div>
+            <div class="role-name">ספרנית</div>
+          </div>
+          <div class="role-btn" onclick="selectRole(this,'student')">
+            <div class="role-icon">🎒</div>
+            <div class="role-name">תלמיד</div>
+          </div>
+          <div class="role-btn" onclick="selectRole(this,'admin')">
+            <div class="role-icon">🏫</div>
+            <div class="role-name">הנהלה</div>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-lg" style="width:100%" onclick="loginByRole()">כניסה למערכת ←</button>
+      <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--text3)">
+        שכחת סיסמה? <span style="color:var(--accent);cursor:pointer">לחץ כאן</span>
+      </div>
+    </div>
+    <div style="margin-top:16px;font-size:11px;color:var(--text3)">גרסה 1.0 | פרויקט גמר תשפ"ו</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     SHELL (sidebar + topbar shared)
+══════════════════════════════════ -->
+
+<!-- SCREEN 1: DASHBOARD (ספרנית) -->
+<div class="screen" id="s1">
+  <div class="shell">
+    <nav class="sidebar">
+      <div class="sidebar-logo">
+        <h1>📚 Beit Jan<br>Smart Library</h1>
+        <p>מערכת ניהול ספרייה</p>
+      </div>
+      <div class="sidebar-user">
+        <div class="role">👩‍💼 ספרנית</div>
+        <div class="name">סיהאם עטילה</div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-label">ראשי</div>
+        <div class="nav-item active" onclick="goTo('s1')"><span class="icon">🏠</span> לוח בקרה</div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-label">תהליכים</div>
+        <div class="nav-item" onclick="goTo('s2a')"><span class="icon">📖</span> השאלת ספר</div>
+        <div class="nav-item" onclick="goTo('s3a')"><span class="icon">↩️</span> החזרת ספר</div>
+        <div class="nav-item" onclick="goTo('s4a')"><span class="icon">📦</span> ניהול מלאי</div>
+        <div class="nav-item" onclick="goTo('s5a')"><span class="icon">👥</span> ניהול תלמידים</div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-label">דוחות</div>
+        <div class="nav-item" onclick="goTo('s6a')"><span class="icon">📊</span> דוח השאלות</div>
+        <div class="nav-item" onclick="goTo('s6b')"><span class="icon">⚠️</span> דוח איחורים</div>
+        <div class="nav-item" onclick="goTo('s6c')"><span class="icon">📋</span> דוח מלאי</div>
+      </div>
+      <div class="sidebar-footer">
+        <button class="btn-logout" onclick="goTo('s0')">🚪 יציאה מהמערכת</button>
+      </div>
+    </nav>
+    <div class="main">
+      <div class="topbar">
+        <span class="topbar-title">לוח בקרה – ספרנית</span>
+        <div class="topbar-actions">
+          <button class="lang-btn" onclick="toggleLang()">עב / ع / EN</button>
+          <span style="font-size:12px;color:var(--text3)">יום שני, 19.5.2026</span>
+        </div>
+      </div>
+      <div class="content">
+        <div class="note-box"><strong>📋 מסך 1 – לוח בקרה:</strong> סקירת פעילות שוטפת. דרישות: 1.7.3.1 (דוח פעילות יומי), 1.7.3.4 (תצוגה ויזואלית).</div>
+        <div class="page-header">
+          <h2>שלום סיהאם, בוקר טוב ☀️</h2>
+          <p>סיכום פעילות הספרייה – יום שני 19.5.2026</p>
+        </div>
+        <div class="grid-4" style="margin-bottom:20px">
+          <div class="stat-card" onclick="goTo('s6a')">
+            <div class="stat-icon">📖</div>
+            <div class="stat-num">47</div>
+            <div class="stat-label">ספרים מושאלים</div>
+          </div>
+          <div class="stat-card danger" onclick="goTo('s6b')">
+            <div class="stat-icon">⏰</div>
+            <div class="stat-num">8</div>
+            <div class="stat-label">איחורים פעילים</div>
+          </div>
+          <div class="stat-card accent" onclick="goTo('s6c')">
+            <div class="stat-icon">📦</div>
+            <div class="stat-num">312</div>
+            <div class="stat-label">ספרים במלאי</div>
+          </div>
+          <div class="stat-card success" onclick="goTo('s3a')">
+            <div class="stat-icon">↩️</div>
+            <div class="stat-num">5</div>
+            <div class="stat-label">החזרות היום</div>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">⚡ פעולות מהירות</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <button class="btn btn-primary" onclick="goTo('s2a')">📖 השאלת ספר חדשה</button>
+              <button class="btn btn-outline" onclick="goTo('s3a')">↩️ קבלת החזרה</button>
+              <button class="btn btn-outline" onclick="goTo('s4b')">➕ הוספת ספר למלאי</button>
+              <button class="btn btn-outline" onclick="goTo('s6b')">⚠️ שליחת תזכורות</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📬 איחורים אחרונים</div>
+            <table>
+              <tr><th>תלמיד</th><th>ספר</th><th>איחור</th><th></th></tr>
+              <tr><td>דניאל כהן</td><td>מחשבים ורשתות</td><td><span class="badge danger">12 ימים</span></td><td><button class="btn btn-sm btn-outline" onclick="goTo('s5b')">פרטים</button></td></tr>
+              <tr><td>לינה עמאר</td><td>ביולוגיה ט'</td><td><span class="badge warning">5 ימים</span></td><td><button class="btn btn-sm btn-outline" onclick="goTo('s5b')">פרטים</button></td></tr>
+              <tr><td>ראמי נאסר</td><td>היסטוריה י"א</td><td><span class="badge warning">3 ימים</span></td><td><button class="btn btn-sm btn-outline" onclick="goTo('s5b')">פרטים</button></td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 2a: השאלה - זיהוי תלמיד -->
+<div class="screen" id="s2a">
+  <div class="shell">
+    <nav class="sidebar">
+      <div class="sidebar-logo"><h1>📚 Beit Jan<br>Smart Library</h1><p>מערכת ניהול ספרייה</p></div>
+      <div class="sidebar-user"><div class="role">👩‍💼 ספרנית</div><div class="name">סיהאם עטילה</div></div>
+      <div class="nav-section"><div class="nav-label">ראשי</div><div class="nav-item" onclick="goTo('s1')"><span class="icon">🏠</span> לוח בקרה</div></div>
+      <div class="nav-section"><div class="nav-label">תהליכים</div>
+        <div class="nav-item active" onclick="goTo('s2a')"><span class="icon">📖</span> השאלת ספר</div>
+        <div class="nav-item" onclick="goTo('s3a')"><span class="icon">↩️</span> החזרת ספר</div>
+        <div class="nav-item" onclick="goTo('s4a')"><span class="icon">📦</span> ניהול מלאי</div>
+        <div class="nav-item" onclick="goTo('s5a')"><span class="icon">👥</span> ניהול תלמידים</div>
+      </div>
+      <div class="nav-section"><div class="nav-label">דוחות</div>
+        <div class="nav-item" onclick="goTo('s6a')"><span class="icon">📊</span> דוח השאלות</div>
+        <div class="nav-item" onclick="goTo('s6b')"><span class="icon">⚠️</span> דוח איחורים</div>
+        <div class="nav-item" onclick="goTo('s6c')"><span class="icon">📋</span> דוח מלאי</div>
+      </div>
+      <div class="sidebar-footer"><button class="btn-logout" onclick="goTo('s0')">🚪 יציאה</button></div>
+    </nav>
+    <div class="main">
+      <div class="topbar">
+        <span class="topbar-title">השאלת ספר</span>
+        <div class="topbar-actions"><button class="lang-btn">עב / ع / EN</button></div>
+      </div>
+      <div class="content">
+        <div class="note-box"><strong>📋 מסך 2 – זיהוי תלמיד:</strong> שלב 1 מתוך 3. דרישות: 1.7.1.1 (זיהוי תלמיד + בדיקת זכאות בזמן אמת).</div>
+        <div class="breadcrumb"><span>השאלת ספר</span><span class="sep">›</span><span class="current">שלב 1: זיהוי תלמיד</span></div>
+        <div class="steps">
+          <div class="step active"><div class="step-circle">1</div><div class="step-label">זיהוי תלמיד</div></div>
+          <div class="step-line"></div>
+          <div class="step"><div class="step-circle">2</div><div class="step-label">בחירת ספר</div></div>
+          <div class="step-line"></div>
+          <div class="step"><div class="step-circle">3</div><div class="step-label">אישור השאלה</div></div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">🔍 חיפוש תלמיד</div>
+            <div class="form-group">
+              <label class="form-label">מספר תעודת זהות / מספר תלמיד</label>
+              <input class="form-control" type="text" placeholder="הזן מספר מזהה..." value="205743891">
+            </div>
+            <div class="form-group">
+              <label class="form-label">או חיפוש לפי שם</label>
+              <input class="form-control" type="text" placeholder="הזן שם תלמיד...">
+            </div>
+            <button class="btn btn-primary" onclick="showStudentFound()">🔍 חיפוש</button>
+          </div>
+          <div class="card" id="student-result" style="display:none">
+            <div class="card-title">✅ תלמיד נמצא</div>
+            <div style="display:flex;flex-direction:column;gap:8px;font-size:13px">
+              <div><strong>שם:</strong> דניאל כהן</div>
+              <div><strong>כיתה:</strong> י"א 3</div>
+              <div><strong>מספר תלמיד:</strong> 205743891</div>
+              <div><strong>טלפון:</strong> 052-7654321</div>
+              <hr class="divider">
+              <div><strong>סטטוס זכאות:</strong> <span class="badge success">✅ רשאי להשאיל</span></div>
+              <div><strong>ספרים מושאלים:</strong> 1 מתוך 3 מותרים</div>
+              <div><strong>חובות פעילים:</strong> <span class="badge neutral">אין</span></div>
+            </div>
+            <div class="actions-row" style="margin-top:14px">
+              <button class="btn btn-accent" onclick="goTo('s2b')">המשך לבחירת ספר ←</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-nav">
+        <button class="btn btn-outline btn-sm" onclick="goTo('s1')">← חזרה</button>
+        <button class="btn btn-primary btn-sm" onclick="goTo('s2b')">הבא: בחירת ספר →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 2b: השאלה - בחירת ספר -->
+<div class="screen" id="s2b">
+  <div class="shell">
+    <nav class="sidebar">
+      <div class="sidebar-logo"><h1>📚 Beit Jan<br>Smart Library</h1><p>מערכת ניהול ספרייה</p></div>
+      <div class="sidebar-user"><div class="role">👩‍💼 ספרנית</div><div class="name">סיהאם עטילה</div></div>
+      <div class="nav-section"><div class="nav-label">ראשי</div><div class="nav-item" onclick="goTo('s1')"><span class="icon">🏠</span> לוח בקרה</div></div>
+      <div class="nav-section"><div class="nav-label">תהליכים</div>
+        <div class="nav-item active"><span class="icon">📖</span> השאלת ספר</div>
+        <div class="nav-item" onclick="goTo('s3a')"><span class="icon">↩️</span> החזרת ספר</div>
+        <div class="nav-item" onclick="goTo('s4a')"><span class="icon">📦</span> ניהול מלאי</div>
+        <div class="nav-item" onclick="goTo('s5a')"><span class="icon">👥</span> ניהול תלמידים</div>
+      </div>
+      <div class="nav-section"><div class="nav-label">דוחות</div>
+        <div class="nav-item" onclick="goTo('s6a')"><span class="icon">📊</span> דוח השאלות</div>
+        <div class="nav-item" onclick="goTo('s6b')"><span class="icon">⚠️</span> דוח איחורים</div>
+        <div class="nav-item" onclick="goTo('s6c')"><span class="icon">📋</span> דוח מלאי</div>
+      </div>
+      <div class="sidebar-footer"><button class="btn-logout" onclick="goTo('s0')">🚪 יציאה</button></div>
+    </nav>
+    <div class="main">
+      <div class="topbar">
+        <span class="topbar-title">השאלת ספר – בחירת ספר</span>
+        <div class="topbar-actions"><button class="lang-btn">עב / ع / EN</button></div>
+      </div>
+      <div class="content">
+        <div class="note-box"><strong>📋 מסך 3 – בחירת ספר:</strong> שלב 2 מתוך 3. דרישות: 1.7.1.2 (חיפוש מתקדם), 1.7.1.3 (סטטוס זמינות), 1.7.1.5 (סריקת ברקוד / הקלדה ידנית).</div>
+        <div class="breadcrumb"><span>השאלת ספר</span><span class="sep">›</span><span class="current">שלב 2: בחירת ספר</span></div>
+        <div class="steps">
+          <div class="step done"><div class="step-circle">✓</div><div class="step-label">זיהוי תלמיד</div></div>
+          <div class="step-line"></div>
+          <div class="step active"><div class="step-circle">2</div><div class="step-label">בחירת ספר</div></div>
+          <div class="step-line"></div>
+          <div class="step"><div class="step-circle">3</div><div class="step-label">אישור השאלה</div></div>
+        </div>
+        <div class="alert info">📖 תלמיד: <strong>דניאל כהן</strong> – זכאי להשאלה</div>
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-title">🔍 חיפוש ספר</div>
+          <div class="search-bar">
+            <input class="form-control" placeholder="חפש לפי שם, מחבר, ברקוד..." value="מחשבים">
+            <select class="form-control" style="width:140px"><option>כל הז'אנרים</option><option>מדע</option><option>ספרות</option><option>היסטוריה</option></select>
+            <button class="btn btn-primary">חפש</button>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div class="book-card" onclick="selectBook(this)">
+              <div class="book-cover">💻</div>
+              <div class="book-info">
+                <h4>מחשבים ורשתות – מבוא</h4>
+                <p>מחבר: ד"ר יואל לוי | מדף: A3-12</p>
+                <span class="badge success">✅ זמין</span>
+              </div>
+            </div>
+            <div class="book-card">
+              <div class="book-cover">🖥️</div>
+              <div class="book-info">
+                <h4>יסודות תכנות Python</h4>
+                <p>מחבר: מירי כהן | מדף: A3-15</p>
+                <span class="badge danger">❌ מושאל – חזרה ב-25.5</span>
+              </div>
+            </div>
+            <div class="book-card" onclick="selectBook(this)">
+              <div class="book-cover">🔬</div>
+              <div class="book-info">
+                <h4>מדעי המחשב לבגרות</h4>
+                <p>מחבר: נועה ברק | מדף: A4-02</p>
+                <span class="badge success">✅ זמין</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-nav">
+        <button class="btn btn-outline btn-sm" onclick="goTo('s2a')">← חזרה</button>
+        <button class="btn btn-primary btn-sm" onclick="goTo('s2c')">הבא: אישור השאלה →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 2c: אישור השאלה -->
+<div class="screen" id="s2c">
+  <div class="shell">
+    <nav class="sidebar">
+      <div class="sidebar-logo"><h1>📚 Beit Jan<br>Smart Library</h1><p>מערכת ניהול ספרייה</p></div>
+      <div class="sidebar-user"><div class="role">👩‍💼 ספרנית</div><div class="name">סיהאם עטילה</div></div>
+      <div class="nav-section"><div class="nav-label">ראשי</div><div class="nav-item" onclick="goTo('s1')"><span class="icon">🏠</span> לוח בקרה</div></div>
+      <div class="nav-section"><div class="nav-label">תהליכים</div>
+        <div class="nav-item active"><span class="icon">📖</span> השאלת ספר</div>
+        <div class="nav-item" onclick="goTo('s3a')"><span class="icon">↩️</span> החזרת ספר</div>
+        <div class="nav-item" onclick="goTo('s4a')"><span class="icon">📦</span> ניהול מלאי</div>
+        <div class="nav-item" onclick="goTo('s5a')"><span class="icon">👥</span> ניהול תלמידים</div>
+      </div>
+      <div class="nav-section"><div class="nav-label">דוחות</div>
+        <div class="nav-item" onclick="goTo('s6a')"><span class="icon">📊</span> דוח השאלות</div>
+        <div class="nav-item" onclick="goTo('s6b')"><span class="icon">⚠️</span> דוח איחורים</div>
+        <div class="nav-item" onclick="goTo('s6c')"><span class="icon">📋</span> דוח מלאי</div>
+      </div>
+      <div class="sidebar-footer"><button class="btn-logout" onclick="goTo('s0')">🚪 יציאה</button></div>
+    </nav>
+    <div class="main">
+      <div class="topbar">
+        <span class="topbar-title">השאלת ספר – אישור</span>
+        <div class="topbar-actions"><button class="lang-btn">עב / ع / EN</button></div>
+      </div>
+      <div class="content">
+        <div class="note-box"><strong>📋 מסך 4 – אישור השאלה:</strong> שלב 3 מתוך 3. דרישות: 1.7.1.6 (רישום השאלה), 1.7.1.7 (חישוב תאריך החזרה), 1.7.1.8 (שליחת אישור דיגיטלי).</div>
+        <div class="breadcrumb"><span>השאלת ספר</span><span class="sep">›</span><span class="current">שלב 3: אישור</span></div>
+        <div class="steps">
+          <div class="step done"><div class="step-circle">✓</div><div class="step-label">זיהוי תלמיד</div></div>
+          <div class="step-line"></div>
+          <div class="step done"><div class="step-circle">✓</div><div class="step-label">בחירת ספר</div></div>
+          <div class="step-line"></div>
+          <div class="step active"><div class="step-circle">3</div><div class="step-label">אישור השאלה</div></div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">📋 סיכום ההשאלה</div>
+            <div style="display:flex;flex-direction:column;gap:10px;font-size:13px">
+              <div style="background:var(--surface2);padding:10px;border-radius:var(--radius-sm)">
+                <div style="font-weight:700;margin-bottom:4px">👤 תלמיד</div>
+                <div>דניאל כהן – כיתה י"א 3</div>
+              </div>
+              <div style="background:var(--surface2);padding:10px;border-radius:var(--radius-sm)">
+                <div style="font-weight:700;margin-bottom:4px">📖 ספר</div>
+                <div>מחשבים ורשתות – מבוא</div>
+                <div style="color:var(--text3);font-size:11px">מדף: A3-12 | ברקוד: BK-0047</div>
+              </div>
+              <div style="background:var(--surface2);padding:10px;border-radius:var(--radius-sm)">
+                <div style="font-weight:700;margin-bottom:4px">📅 תאריכים</div>
+                <div>תאריך השאלה: 19.5.2026</div>
+                <div>תאריך החזרה: <strong style="color:var(--accent)">2.6.2026</strong> (14 יום)</div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📲 שליחת אישור</div>
+            <div class="form-group">
+              <label class="form-label">שלח אישור ל:</label>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" checked> <span>📱 WhatsApp (052-7654321)</span></label>
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox"> <span>📧 מייל (daniel@school.il)</span></label>
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox"> <span>💬 SMS</span></label>
+              </div>
+            </div>
+            <hr class="divider">
+            <button class="btn btn-success" style="width:100%;margin-bottom:8px" onclick="showLoanSuccess()">✅ אשר השאלה ושלח הודעה</button>
+            <button class="btn btn-outline" style="width:100%" onclick="goTo('s2a')">ביטול</button>
+          </div>
+        </div>
+        <div class="alert success" id="loan-success" style="display:none">✅ ההשאלה נרשמה בהצלחה! אישור נשלח לתלמיד. הספר עודכן כ"מושאל" במערכת.</div>
+      </div>
+      <div class="screen-nav">
+        <button class="btn btn-outline btn-sm" onclick="goTo('s2b')">← חזרה</button>
+        <button class="btn btn-primary btn-sm" onclick="goTo('s1')">סיום – חזרה לדשבורד 🏠</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 3a: החזרה - סריקת ספר -->
+<div class="screen" id="s3a">
+  <div class="shell">
+    <nav class="sidebar">
+      <div class="sidebar-logo"><h1>📚 Beit Jan<br>Smart Library</h1><p>מערכת ניהול ספרייה</p></div>
+      <div class="sidebar-user"><div class="role">👩‍💼 ספרנית</div><div class="name">סיהאם עטילה</div></div>
+      <div class="nav-section"><div class="nav-label">ראשי</div><div class="nav-item" onclick="goTo('s1')"><span class="icon">🏠</span> לוח בקרה</div></div>
+      <div class="nav-section"><div class="nav-label">תהליכים</div>
+        <div class="nav-item" onclick="goTo('s2a')"><span class="icon">📖</span> השאלת ספר</div>
+        <div class="nav-item active"><span class="icon">↩️</span> החזרת ספר</div>
+        <div class="nav-item" onclick="goTo('s4a')"><span class="icon">📦</span> ניהול מלאי</div>
+        <div class="nav-item" onclick="goTo('s5a')"><span class="icon">👥</span> ניהול תלמידים</div>
+      </div>
+      <div class="nav-section"><div class="nav-label">דוחות</div>
+        <div class="nav-item" onclick="goTo('s6a')"><span class="icon">📊</span> דוח השאלות</div>
+        <div class="nav-item" onclick="goTo('s6b')"><span class="icon">⚠️</span> דוח איחורים</div>
+        <div class="nav-item" onclick="goTo('s6c')"><span class="icon">📋</span> דוח מלאי</div>
+      </div>
+      <div class="sidebar-footer"><button class="btn-logout" onclick="goTo('s0')">🚪 יציאה</button></div>
+    </nav>
+    <div class="main">
+      <div class="topbar">
+        <span class="topbar-title">החזרת ספר</span>
+        <div class="topbar-actions"><button class="lang-btn">עב / ع / EN</button></div>
+      </div>
+      <div class="content">
+        <div class="note-box"><strong>📋 מסך 5 – זיהוי ספר לחזרה:</strong> דרישות: 1.7.2.1 (זיהוי רשומת השאלה), 1.7.2.2 (בדיקת איחור אוטומטית).</div>
+        <div class="steps">
+          <div class="step active"><div class="step-circle">1</div><div class="step-label">זיהוי ספר</div></div>
+          <div class="step-line"></div>
+          <div class="step"><div class="step-circle">2</div><div class="step-label">בדיקת מצב</div></div>
+          <div class="step-line"></div>
+          <div class="step"><div class="step-circle">3</div><div class="step-label">אישור החזרה</div></div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">📷 סריקת ברקוד / הזנה ידנית</div>
+            <div style="background:var(--surface2);border:2px dashed var(--border);border-radius:var(--radius);height:120px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;cursor:pointer">
+              <div style="text-align:center;color:var(--text3)">
+                <div style="font-size:36px">📷</div>
+                <div style="font-size:12px;margin-top:6px">לחץ לסריקת ברקוד</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">או הזן ברקוד / מספר ספר ידנית</label>
+              <input class="form-control" placeholder="BK-XXXX" value="BK-0031">
+            </div>
+            <button class="btn btn-primary" onclick="goTo('s3b')">🔍 חפש</button>
+          </div>
+          <div class="card">
+            <div class="card-title">📋 החזרות אחרונות</div>
+            <table>
+              <tr><th>ספר</th><th>תלמיד</th><th>שעה</th></tr>
+              <tr><td>אנגלית ח'</td><td>מאיה קדיר</td><td>09:14</td></tr>
+              <tr><td>פיזיקה י'</td><td>יוסף סלים</td><td>09:02</td></tr>
+              <tr><td>ביולוגיה ט'</td><td>לינה עמאר</td><td>08:45</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 3b: החזרה - בדיקת מצב -->
+<div class="screen" id="s3b">
+  <div class="shell">
+    <nav class="sidebar">
+      <div class="sidebar-logo"><h1>📚 Beit Jan<br>Smart Library</h1><p>מערכת ניהול ספרייה</p></div>
+      <div class="sidebar-user"><div class="role">👩‍💼 ספרנית</div><div class="name">סיהאם עטילה</div></div>
+      <div class="nav-section"><div class="nav-label">ראשי</div><div class="nav-item" onclick="goTo('s1')"><span class="icon">🏠</span> לוח בקרה</div></div>
+      <div class="nav-section"><div class="nav-label">תהליכים</div>
+        <div class="nav-item" onclick="goTo('s2a')"><span class="icon">📖</span> השאלת ספר</div>
+        <div class="nav-item active"><span class="icon">↩️</span> החזרת ספר</div>
+        <div class="nav-item" onclick="goTo('s4a')"><span class="icon">📦</span> ניהול מלאי</div>
+        <div class="nav-item" onclick="goTo('s5a')"><span class="icon">👥</span> ניהול תלמידים</div>
+      </div>
+      <div class="nav-section"><div class="nav-label">דוחות</div>
+        <div class="nav-item" onclick="goTo('s6a')"><span class="icon">📊</span> דוח השאלות</div>
+        <div class="nav-item" onclick="goTo('s6b')"><span class="icon">⚠️</span> דוח איחורים</div>
+        <div class="nav-item" onclick="goTo('s6c')"><span class="icon">📋</span> דוח מלאי</div>
+      </div>
+      <div class="sidebar-footer"><button class="btn-logout" onclick="goTo('s0')">🚪 יציאה</button></div>
+    </nav>
+    <div class="main">
+      <div class="topbar">
+        <span class="topbar-title">החזרת ספר – בדיקת מצב</span>
+        <div class="topbar-actions"><button class="lang-btn">עב / ع / EN</button></div>
+      </div>
+      <div class="content">
+        <div class="note-box"><strong>📋 מסך 6 – בדיקת מצב ספר:</strong> דרישות: 1.7.2.3 (דיווח מצב פיזי), 1.7.2.4 (חישוב קנס/חוב).</div>
+        <div class="steps">
+          <div class="step done"><div class="step-circle">✓</div><div class="step-label">זיהוי ספר</div></div>
+          <div class="step-line"></div>
+          <div class="step active"><div class="step-circle">2</div><div class="step-label">בדיקת מצב</div></div>
+          <div class="step-line"></div>
+          <div class="step"><div class="step-circle">3</div><div class="step-label">אישור החזרה</div></div>
+        </div>
+        <div class="alert warning">⚠️ <strong>איחור של 3 ימים!</strong> מועד החזרה: 16.5.2026</div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">📖 פרטי ספר</div>
+            <div style="font-size:13px;display:flex;flex-direction:column;gap:8px">
+              <div><strong>ספר:</strong> היסטוריה י"א – העולם המודרני</div>
+              <div><strong>ברקוד:</strong> BK-0031</div>
+              <div><strong>מדף:</strong> C2-08</div>
+              <div><strong>תלמיד:</strong> ראמי נאסר, י"א 2</div>
+              <div><strong>תאריך השאלה:</strong> 2.5.2026</div>
+              <div><strong>תאריך החזרה המתוכנן:</strong> 16.5.2026</div>
+              <div><strong>איחור:</strong> <span class="badge warning">3 ימים</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">🔍 מצב פיזי של הספר</div>
+            <div class="form-group">
+              <label class="form-label">מצב הספר</label>
+              <select class="form-control">
+                <option>✅ תקין</option>
+                <option>⚠️ קרוע חלקית</option>
+                <option>❌ פגום קשה</option>
+                <option>❌ חסר דפים</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">הערות</label>
+              <textarea class="form-control" rows="3" placeholder="הוסף הערה על מצב הספר..."></textarea>
+            </div>
+            <div style="background:var(--warning-bg);border:1px solid #e8d580;border-radius:var(--radius-sm);padding:10px;font-size:12px;color:var(--warning)">
+              <strong>חוב מחושב:</strong> 3 ימי איחור × 0 ₪ (אין קנס כספי – הערה במערכת)
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-nav">
+        <button class="btn btn-outline btn-sm" onclick="goTo('s3a')">← חזרה</button>
+        <button class="btn btn-primary btn-sm" onclick="goTo('s3c')">הבא: אישור החזרה →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 3c: אישור החזרה -->
+<div class="screen" id="s3c">
+  <div class="shell">
+    <nav class="sidebar">
+      <div class="sidebar-logo"><h1>📚 Beit Jan<br>Smart Library</h1><p>מערכת ניהול ספרייה</p></div>
+      <div class="sidebar-user"><div class="role">👩‍💼 ספרנית</div><div class="name">סיהאם עטילה</div></div>
+      <div class="nav-section"><div class="nav-label">ראשי</div><div class="nav-item" onclick="goTo('s1')"><span class="icon">🏠</span> לוח בקרה</div></div>
+      <div class="nav-section"><div class="nav-label">תהליכים</div>
+        <div class="nav-item" onclick="goTo('s2a')"><span class="icon">📖</span> השאלת ספר</div>
+        <div class="nav-item active"><span class="icon">↩️</span> החזרת ספר</div>
+        <div class="nav-item" onclick="goTo('s4a')"><span class="icon">📦</span> ניהול מלאי</div>
+        <div class="nav-item" onclick="goTo('s5a')"><span class="icon">👥</span> ניהול תלמידים</div>
+      </div>
+      <div class="nav-section"><div class="nav-label">דוחות</div>
+        <div class="nav-item" onclick="goTo('s6a')"><span class="icon">📊</span> דוח השאלות</div>
+        <div class="nav-item" onclick="goTo('s6b')"><span class="icon">⚠️</span> דוח איחורים</div>
+        <div class="nav-item" onclick="goTo('s6c')"><span class="icon">📋</span> דוח מלאי</div>
+      </div>
+      <div class="sidebar-footer"><button class="btn-logout" onclick="goTo('s0')">🚪 יציאה</button></div>
+    </nav>
+    <div class="main">
+      <div class="topbar">
+        <span class="topbar-title">החזרת ספר – אישור סופי</span>
+        <div class="topbar-actions"><button class="lang-btn">עב / ع / EN</button></div>
+      </div>
+      <div class="content">
+        <div class="note-box"><strong>📋 מסך 7 – אישור החזרה:</strong> דרישות: 1.7.2.5 (אישור החזרה דיגיטלי), 1.7.2.6 (מיקום מדף), 1.7.2.7 (אישור מיקום), 1.7.2.8 (סגירת רשומה), 1.7.2.9 (עדכון סטטוס לזמין).</div>
+        <div class="steps">
+          <div class="step done"><div class="step-circle">✓</div><div class="step-label">זיהוי ספר</div></div>
+          <div class="step-line"></div>
+          <div class="step done"><div class="step-circle">✓</div><div class="step-label">בדיקת מצב</div></div>
+          <div class="step-line"></div>
+          <div class="step active"><div class="step-circle">3</div><div class="step-label">אישור החזרה</div></div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">📍 החזרת ספר למדף</div>
+            <div class="alert info" style="margin-bottom:14px">📍 יש להחזיר את הספר למדף: <strong>C2-08</strong></div>
+            <div style="background:var(--surface2);border-radius:var(--radius);padding:16px;text-align:center;margin-bottom:14px">
+              <div style="font-size:32px;margin-bottom:8px">🗄️</div>
+              <div style="font-weight:700;font-size:18px;color:var(--primary)">C2-08</div>
+              <div style="font-size:12px;color:var(--text3)">ארון C, מדף 2, מיקום 08</div>
+            </div>
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+              <input type="checkbox" id="shelf-confirm"> <span>✅ אישרתי שהספר הוחזר למדף הנכון</span>
+            </label>
+          </div>
+          <div class="card">
+            <div class="card-title">✅ סיכום החזרה</div>
+            <div style="font-size:13px;display:flex;flex-direction:column;gap:8px;margin-bottom:14px">
+              <div><strong>ספר:</strong> היסטוריה י"א</div>
+              <div><strong>תלמיד:</strong> ראמי נאסר</div>
+              <div><strong>מצב:</strong> תקין</div>
+              <div><strong>איחור:</strong> <span class="badge warning">3 ימים</span></div>
+              <div><strong>חוב:</strong> <span class="badge neutral">אין קנס כספי</span></div>
+            </div>
+            <button class="btn btn-success" style="width:100%;margin-bottom:8px" onclick="goTo('s1')">✅ אשר החזרה וסגור רשומה</button>
+            <button class="btn btn-outline" style="width:100%" onclick="goTo('s3a')">ביטול</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 4a: ניהול מלאי -->
+<div class="screen" id="s4a">
+  <div class="shell">
+    <nav class="sidebar">
+      <div class="sidebar-logo"><h1>📚 Beit Jan<br>Smart Library</h1><p>מערכת ניהול ספרייה</p></div>
+      <div class="sidebar-user"><div class="role">👩‍💼 ספרנית</div><div class="name">סיהאם עטילה</div></div>
+      <div class="nav-section"><div class="nav-label">ראשי</div><div class="nav-item" onclick="goTo('s1')"><span class="icon">🏠</span> לוח בקרה</div></div>
+      <div class="nav-section"><div class="nav-label">תהליכים</div>
+        <div class="nav-item" onclick="goTo('s2a')"><span class="icon">📖</span> השאלת ספר</div>
+        <div class="nav-item" onclick="goTo('s3a')"><span class="icon">↩️</span> החזרת ספר</div>
+        <div class="nav-item active"><span class="icon">📦</span> ניהול מלאי</div>
+        <div class="nav-item" onclick="goTo('s5a')"><span class="icon">👥</span> ניהול תלמידים</div>
+      </div>
+      <div class="nav-section"><div class="nav-label">דוחות</div>
+        <div class="nav-item" onclick="goTo('s6a')"><span class="icon">📊</span> דוח השאלות</div>
+        <div class="nav-item" onclick="goTo('s6b')"><span class="icon">⚠️</span> דוח איחורים</div>
+        <div class="nav-item" onclick="goTo('s6c')"><span class="icon">📋</span> דוח מלאי</div>
+      </div>
+      <div class="sidebar-footer"><button class="btn-logout" onclick="goTo('s0')">🚪 יציאה</button></div>
+    </nav>
+    <div class="main">
+      <div class="topbar">
+        <span class="topbar-title">ניהול מלאי ספרים</span>
+        <div class="topbar-actions">
+          <button class="lang-btn">עב / ع / EN</button>
+          <button class="btn btn-accent btn-sm" onclick="goTo('s4b')">➕ ספר חדש</button>
+        </div>
+      </div>
+      <div class="content">
+        <div class="note-box"><strong>📋 מסך 8 – רשימת מלאי:</strong> דרישות: 1.7.3.1 (רשימות פעילות), קטלוג ספרים, עדכון סטטוס.</div>
+        <div class="search-bar">
+          <input class="form-control" placeholder="חפש ספר לפי שם, מחבר, ברקוד...">
+          <select class="form-control" style="width:130px"><option>כל הסטטוסים</option><option>זמין</option><option>מושאל</option><option>פגום</option></select>
+          <select class="form-control" style="width:130px"><option>כל הז'אנרים</option><option>מדע</option><option>ספרות</option><option>היסטוריה</option></select>
+          <button class="btn btn-primary">חפש</button>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <tr><th>ברקוד</th><th>שם הספר</th><th>מחבר</th><th>ז'אנר</th><th>מדף</th><th>סטטוס</th><th>פעולות</th></tr>
+              <tr>
+                <td>BK-0001</td><td>מתמטיקה לבגרות 5 יח"ל</td><td>פרופ' כהן</td><td>לימוד</td><td>A1-01</td>
+                <td><span class="badge success">זמין</span></td>
+                <td><button class="btn btn-sm btn-outline" onclick="goTo('s4c')">✏️</button></td>
+              </tr>
+              <tr>
+                <td>BK-0002</td><td>ביולוגיה ט'</td><td>ד"ר לוי</td><td>מדע</td><td>B2-03</td>
+                <td><span class="badge danger">מושאל</span></td>
+                <td><button class="btn btn-sm btn-outline" onclick="goTo('s4c')">✏️</button></td>
+              </tr>
+              <tr>
+                <td>BK-0031</td><td>היסטוריה י"א</td><td>מירי שרון</td><td>היסטוריה</td><td>C2-08</td>
+                <td><span class="badge success">זמין</span></td>
+                <td><button class="btn btn-sm btn-outline" onclick="goTo('s4c')">✏️</button></td>
+              </tr>
+              <tr>
+                <td>BK-0047</td><td>מחשבים ורשתות</td><td>ד"ר לוי</td><td>טכנולוגיה</td><td>A3-12</td>
+                <td><span class="badge warning">שריון</span></td>
+                <td><button class="btn btn-sm btn-outline" onclick="goTo('s4c')">✏️</button></td>
+              </tr>
+              <tr>
+                <td>BK-0055</td><td>ספרות עברית</td><td>נועה ברק</td><td>ספרות</td><td>D1-05</td>
+                <td><span class="badge neutral">פגום</span></td>
+                <td><button class="btn btn-sm btn-outline" onclick="goTo('s4c')">✏️</button></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 4b: הוספת ספר -->
+<div class="screen" id="s4b">
+  <div class="shell">
+    <nav class="sidebar">
+      <div class="sidebar-logo"><h1>📚 Beit Jan<br>Smart Library</h1><p>מערכת ניהול ספרייה</p></div>
+      <div class="sidebar-user"><div class="role">👩‍💼 ספרנית</div><div class="name">סיהאם עטילה</div></div>
+      <div class="nav-section"><div class="nav-label">ראשי</div><div class="nav-item" onclick="goTo('s1')"><span class="icon">🏠</span> לוח בקרה</div></div>
+      <div class="nav-section"><div class="nav-label">תהליכים</div>
+        <div class="nav-item" onclick="goTo('s2a')"><span class="icon">📖</span> השאלת ספר</div>
+        <div class="nav-item" onclick="goTo('s3a')"><span class="icon">↩️</span> החזרת ספר</div>
+        <div class="nav-item active"><span class="icon">📦</span> ניהול מלאי</div>
+        <div class="nav-item" onclick="goTo('s5a')"><span class="icon">👥</span> ניהול תלמידים</div>
+      </div>
+      <div class="nav-section"><div class="nav-label">דוחות</div>
+        <div class="nav-item" onclick="goTo('s6a')"><span class="icon">📊</span> דוח השאלות</div>
+        <div class="nav-item" onclick="goTo('s6b')"><span class="icon">⚠️</span> דוח איחורים</div>
+        <div class="nav-item" onclick="goTo('s6c')"><span class="icon">📋</span> דוח מלאי</div>
+      </div>
+      <div class="sidebar-footer"><button class="btn-logout" onclick="goTo('s0')">🚪 יציאה</button></div>
+    </nav>
+    <div class="main">
+      <div class="topbar">
+        <span class="topbar-title">הוספת ספר חדש</span>
+        <div class="topbar-actions"><button class="lang-btn">עב / ع / EN</button></div>
+      </div>
+      <div class="content">
+        <div class="note-box"><strong>📋 מסך 9 – הוספת ספר:</strong> דרישות: ניהול קטלוג, שילוב Google Books API לשליפת נתונים אוטומטית.</div>
+        <div class="breadcrumb"><span onclick="goTo('s4a')" style="cursor:pointer;color:var(--accent)">ניהול מלאי</span><span class="sep">›</span><span class="current">הוספת ספר חדש</span></div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">📖 פרטי הספר</div>
+            <div class="form-group">
+              <label class="form-label">ISBN / ברקוד</label>
+              <div style="display:flex;gap:8px">
+                <input class="form-control" placeholder="הזן ISBN..." value="978-965-123-456-7">
+                <button class="btn btn-outline btn-sm">🔍 Google Books</button>
+              </div>
+              <div style="font-size:11px;color:var(--text3);margin-top:4px">שליפת פרטים אוטומטית מ-Google Books API</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">שם הספר</label>
+              <input class="form-control" value="מחשבים ורשתות – מתקדמים">
+            </div>
+            <div class="form-group">
+              <label class="form-label">מחבר</label>
+              <input class="form-control" value="ד"ר יואל לוי">
+            </div>
+            <div class="form-group">
+              <label class="form-label">ז'אנר</label>
+              <select class="form-control"><option selected>טכנולוגיה</option><option>מדע</option><option>ספרות</option><option>היסטוריה</option><option>לימוד</option></select>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📍 מיקום ומלאי</div>
+            <div class="form-group">
+              <label class="form-label">מיקום מדף</label>
+              <div style="display:flex;gap:8px">
+                <select class="form-control"><option>A</option><option>B</option><option>C</option><option>D</option></select>
+                <select class="form-control"><option>1</option><option>2</option><option>3</option><option>4</option></select>
+                <input class="form-control" placeholder="מיקום" value="16">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">כמות עותקים</label>
+              <input class="form-control" type="number" value="2">
+            </div>
+            <div class="form-group">
+              <label class="form-label">שנת הוצאה</label>
+              <input class="form-control" value="2024">
+            </div>
+            <div class="form-group">
+              <label class="form-label">הערות</label>
+              <textarea class="form-control" rows="2" placeholder="הערות נוספות..."></textarea>
+            </div>
+            <div class="actions-row">
+              <button class="btn btn-success" onclick="goTo('s4a')">💾 שמור ספר</button>
+              <button class="btn btn-outline" onclick="goTo('s4a')">ביטול</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 4c: עריכת ספר -->
+<div class="screen" id="s4c">
+  <div class="shell">
+    <nav class="sidebar">
+      <div class="sidebar-logo"><h1>📚 Beit Jan<br>Smart Library</h1><p>מערכת ניהול ספרייה</p></div>
+      <div class="sidebar-user"><div class="role">👩‍💼 ספרנית</div><div class="name">סיהאם עטילה</div></div>
+      <div class="nav-section"><div class="nav-label">ראשי</div><div class="nav-item" onclick="goTo('s1')"><span class="icon">🏠</span> לוח בקרה</div></div>
+      <div class="nav-section"><div class="nav-label">תהליכים</div>
+        <div class="nav-item" onclick="goTo('s2a')"><span class="icon">📖</span> השאלת ספר</div>
+        <div class="nav-item" onclick="goTo('s3a')"><span class="icon">↩️</span> החזרת ספר</div>
+        <div class="nav-item active"><span class="icon">📦</span> ניהול מלאי</div>
+        <div class="nav-item" onclick="goTo('s5a')"><span class="icon">👥</span> ניהול תלמידים</div>
+      </div>
+      <div class="nav-section"><div class="nav-label">דוחות</div>
+        <div class="nav-item" onclick="goTo('s6a')"><span class="icon">📊</span> דוח השאלות</div>
+        <div class="nav-item" onclick="goTo('s6b')"><span class="icon">⚠️</span> דוח איחורים</div>
+        <div class="nav-item" onclick="goTo('s6c')"><span class="icon">📋</span> דוח מלאי</div>
+      </div>
+      <div class="sidebar-footer"><button class="btn-logout" onclick="goTo('s0')">🚪 יציאה</button></div>
+    </nav>
+    <div class="main">
+      <div class="topbar">
+        <span class="topbar-title">עריכת ספר – BK-0001</span>
+        <div class="topbar-actions"><button class="lang-btn">עב / ع / EN</button></div>
+      </div>
+      <div class="content">
+        <div class="note-box"><strong>📋 מסך 10 – עריכת ספר:</strong> עריכת פרטי ספר קיים, שינוי מיקום מדף, גריעה ממלאי. דרישות: ניהול קטלוג, הרשאת ספרן בלבד לגריעה.</div>
+        <div class="breadcrumb"><span onclick="goTo('s4a')" style="cursor:pointer;color:var(--accent)">ניהול מלאי</span><span class="sep">›</span><span class="current">עריכת ספר</span></div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">✏️ עריכת פרטים</div>
+            <div class="form-group"><label class="form-label">שם הספר</label><input class="form-control" value="מתמטיקה לבגרות 5 יח"ל"></div>
+            <div class="form-group"><label class="form-label">מחבר</label><input class="form-control" value='פרופ"ר אברהם כהן'></div>
+            <div class="form-group"><label class="form-label">מדף</label><input class="form-control" value="A1-01"></div>
+            <div class="form-group">
+              <label class="form-label">סטטוס</label>
+              <select class="form-control"><option selected>זמין</option><option>הוצא מהמלאי</option><option>פגום – לתיקון</option></select>
+            </div>
+            <div class="actions-row">
+              <button class="btn btn-success" onclick="goTo('s4a')">💾 שמור שינויים</button>
+              <button class="btn btn-outline" onclick="goTo('s4a')">ביטול</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📊 היסטוריית הספר</div>
+            <div style="font-size:13px;margin-bottom:14px;display:flex;flex-direction:column;gap:6px">
+              <div><strong>ברקוד:</strong> BK-0001</div>
+              <div><strong>סה"כ השאלות:</strong> 23</div>
+              <div><strong>מושאל כרגע:</strong> לא</div>
+              <div><strong>פעם אחרונה הושאל:</strong> 1.5.2026</div>
+            </div>
+            <hr class="divider">
+            <div class="card-title" style="font-size:13px;color:var(--danger)">⚠️ פעולות מסוכנות</div>
+            <button class="btn btn-danger btn-sm">🗑️ גריעת ספר מהמלאי</button>
+            <div style="font-size:11px;color:var(--text3);margin-top:6px">הרשאת ספרן בלבד</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 5a: ניהול תלמידים -->
+<div class="screen" id="s5a">
+  <div class="shell">
+    <nav class="sidebar">
+      <div class="sidebar-logo"><h1>📚 Beit Jan<br>Smart Library</h1><p>מערכת ניהול ספרייה</p></div>
+      <div class="sidebar-user"><div class="role">👩‍💼 ספרנית</div><div class="name">סיהאם עטילה</div></div>
+      <div class="nav-section"><div class="nav-label">ראשי</div><div class="nav-item" onclick="goTo('s1')"><span class="icon">🏠</span> לוח בקרה</div></div>
+      <div class="nav-section"><div class="nav-label">תהליכים</div>
+        <div class="nav-item" onclick="goTo('s2a')"><span class="icon">📖</span> השאלת ספר</div>
+        <div class="nav-item" onclick="goTo('s3a')"><span class="icon">↩️</span> החזרת ספר</div>
+        <div class="nav-item" onclick="goTo('s4a')"><span class="icon">📦</span> ניהול מלאי</div>
+        <div class="nav-item active"><span class="icon">👥</span> ניהול תלמידים</div>
+      </div>
+      <div class="nav-section"><div class="nav-label">דוחות</div>
+        <div class="nav-item" onclick="goTo('s6a')"><span class="icon">📊</span> דוח השאלות</div>
+        <div class="nav-item" onclick="goTo('s6b')"><span class="icon">⚠️</span> דוח איחורים</div>
+        <div class="nav-item" onclick="goTo('s6c')"><span class="icon">📋</span> דוח מלאי</div>
+      </div>
+      <div class="sidebar-footer"><button class="btn-logout" onclick="goTo('s0')">🚪 יציאה</button></div>
+    </nav>
+    <div class="main">
+      <div class="topbar">
+        <span class="topbar-title">ניהול תלמידים</span>
+        <div class="topbar-actions"><button class="lang-btn">עב / ع / EN</button></div>
+      </div>
+      <div class="content">
+        <div class="note-box"><strong>📋 מסך 11 – רשימת תלמידים:</strong> דרישות: 1.7.1.1 (בדיקת זכאות), ניהול חובות וחסימות.</div>
+        <div class="search-bar">
+          <input class="form-control" placeholder="חפש תלמיד לפי שם או ת.ז...">
+          <select class="form-control" style="width:130px"><option>כל הכיתות</option><option>י"א 1</option><option>י"א 2</option><option>י"א 3</option><option>י"ב 1</option></select>
+          <select class="form-control" style="width:130px"><option>כל הסטטוסים</option><option>תקין</option><option>חוב פעיל</option><option>חסום</option></select>
+          <button class="btn btn-primary">חפש</button>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <tr><th>שם</th><th>כיתה</th><th>ת.ז.</th><th>ספרים מושאלים</th><th>סטטוס</th><th>פעולות</th></tr>
+              <tr><td>דניאל כהן</td><td>י"א 3</td><td>205743891</td><td>1</td><td><span class="badge success">תקין</span></td><td><button class="btn btn-sm btn-outline" onclick="goTo('s5b')">פרטים</button></td></tr>
+              <tr><td>לינה עמאר</td><td>י"א 1</td><td>312345678</td><td>2</td><td><span class="badge warning">איחור</span></td><td><button class="btn btn-sm btn-outline" onclick="goTo('s5b')">פרטים</button></td></tr>
+              <tr><td>ראמי נאסר</td><td>י"א 2</td><td>315678901</td><td>1</td><td><span class="badge warning">איחור</span></td><td><button class="btn btn-sm btn-outline" onclick="goTo('s5b')">פרטים</button></td></tr>
+              <tr><td>מאיה קדיר</td><td>י"ב 2</td><td>320123456</td><td>0</td><td><span class="badge success">תקין</span></td><td><button class="btn btn-sm btn-outline" onclick="goTo('s5b')">פרטים</button></td></tr>
+              <tr><td>יוסף סלים</td><td>י"ב 1</td><td>318901234</td><td>3</td><td><span class="badge danger">חסום</span></td><td><button class="btn btn-sm btn-outline" onclick="goTo('s5b')">פרטים</button></td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 5b: פרופיל תלמיד -->
+<div class="screen" id="s5b">
+  <div class="shell">
+    <nav class="sidebar">
+      <div class="sidebar-logo"><h1>📚 Beit Jan<br>Smart Library</h1><p>מערכת ניהול ספרייה</p></div>
+      <div class="sidebar-user"><div class="role">👩‍💼 ספרנית</div><div class="name">סיהאם עטילה</div></div>
+      <div class="nav-section"><div class="nav-label">ראשי</div><div class="nav-item" onclick="goTo('s1')"><span class="icon">🏠</span> לוח בקרה</div></div>
+      <div class="nav-section"><div class="nav-label">תהליכים</div>
+        <div class="nav-item" onclick="goTo('s2a')"><span class="icon">📖</span> השאלת ספר</div>
+        <div class="nav-item" onclick="goTo('s3a')"><span class="icon">↩️</span> החזרת ספר</div>
+        <div class="nav-item" onclick="goTo('s4a')"><span class="icon">📦</span> ניהול מלאי</div>
+        <div class="nav-item active"><span class="icon">👥</span> ניהול תלמידים</div>
+      </div>
+      <div class="nav-section"><div class="nav-label">דוחות</div>
+        <div class="nav-item" onclick="goTo('s6a')"><span class="icon">📊</span> דוח השאלות</div>
+        <div class="nav-item" onclick="goTo('s6b')"><span class="icon">⚠️</span> דוח איחורים</div>
+        <div class="nav-item" onclick="goTo('s6c')"><span class="icon">📋</span> דוח מלאי</div>
+      </div>
+      <div class="sidebar-footer"><button class="btn-logout" onclick="goTo('s0')">🚪 יציאה</button></div>
+    </nav>
+    <div class="main">
+      <div class="topbar">
+        <span class="topbar-title">פרופיל תלמיד</span>
+        <div class="topbar-actions"><button class="lang-btn">עב / ع / EN</button></div>
+      </div>
+      <div class="content">
+        <div class="note-box"><strong>📋 מסך 12 – פרופיל תלמיד:</strong> דרישות: 1.7.1.1 (זכאות להשאלה), היסטוריית השאלות, ניהול חובות.</div>
+        <div class="breadcrumb"><span onclick="goTo('s5a')" style="cursor:pointer;color:var(--accent)">ניהול תלמידים</span><span class="sep">›</span><span class="current">דניאל כהן</span></div>
+        <div class="grid-2" style="margin-bottom:16px">
+          <div class="card">
+            <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">
+              <div style="width:52px;height:52px;background:var(--primary);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff">א</div>
+              <div>
+                <div style="font-weight:700;font-size:16px">דניאל כהן</div>
+                <div style="color:var(--text3);font-size:12px">כיתה י"א 3 | ת.ז. 205743891</div>
+                <span class="badge success">✅ רשאי להשאיל</span>
+              </div>
+            </div>
+            <hr class="divider">
+            <div style="font-size:13px;display:flex;flex-direction:column;gap:6px">
+              <div><strong>טלפון:</strong> 052-7654321</div>
+              <div><strong>מייל:</strong> daniel@school.il</div>
+              <div><strong>ספרים מושאלים:</strong> 1 מתוך 3</div>
+              <div><strong>סה"כ השאלות:</strong> 12</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📖 ספרים מושאלים כעת</div>
+            <table>
+              <tr><th>ספר</th><th>תאריך החזרה</th><th>סטטוס</th></tr>
+              <tr><td>מחשבים ורשתות</td><td>2.6.2026</td><td><span class="badge success">בזמן</span></td></tr>
+            </table>
+            <hr class="divider">
+            <div class="card-title" style="font-size:13px">📜 היסטוריה</div>
+            <table>
+              <tr><th>ספר</th><th>הוחזר</th></tr>
+              <tr><td>ביולוגיה ט'</td><td>1.4.2026</td></tr>
+              <tr><td>אנגלית ח'</td><td>10.3.2026</td></tr>
+            </table>
+          </div>
+        </div>
+        <div class="actions-row">
+          <button class="btn btn-primary btn-sm" onclick="goTo('s2a')">📖 השאל ספר לתלמיד</button>
+          <button class="btn btn-outline btn-sm" onclick="goTo('s5c')">⚠️ ניהול חובות</button>
+          <button class="btn btn-outline btn-sm" onclick="goTo('s5a')">← חזרה לרשימה</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 5c: ניהול חוב -->
+<div class="screen" id="s5c">
+  <div class="shell">
+    <nav class="sidebar">
+      <div class="sidebar-logo"><h1>📚 Beit Jan<br>Smart Library</h1><p>מערכת ניהול ספרייה</p></div>
+      <div class="sidebar-user"><div class="role">👩‍💼 ספרנית</div><div class="name">סיהאם עטילה</div></div>
+      <div class="nav-section"><div class="nav-label">ראשי</div><div class="nav-item" onclick="goTo('s1')"><span class="icon">🏠</span> לוח בקרה</div></div>
+      <div class="nav-section"><div class="nav-label">תהליכים</div>
+        <div class="nav-item" onclick="goTo('s2a')"><span class="icon">📖</span> השאלת ספר</div>
+        <div class="nav-item" onclick="goTo('s3a')"><span class="icon">↩️</span> החזרת ספר</div>
+        <div class="nav-item" onclick="goTo('s4a')"><span class="icon">📦</span> ניהול מלאי</div>
+        <div class="nav-item active"><span class="icon">👥</span> ניהול תלמידים</div>
+      </div>
+      <div class="nav-section"><div class="nav-label">דוחות</div>
+        <div class="nav-item" onclick="goTo('s6a')"><span class="icon">📊</span> דוח השאלות</div>
+        <div class="nav-item" onclick="goTo('s6b')"><span class="icon">⚠️</span> דוח איחורים</div>
+        <div class="nav-item" onclick="goTo('s6c')"><span class="icon">📋</span> דוח מלאי</div>
+      </div>
+      <div class="sidebar-footer"><button class="btn-logout" onclick="goTo('s0')">🚪 יציאה</button></div>
+    </nav>
+    <div class="main">
+      <div class="topbar">
+        <span class="topbar-title">ניהול חובות – לינה עמאר</span>
+        <div class="topbar-actions"><button class="lang-btn">עב / ع / EN</button></div>
+      </div>
+      <div class="content">
+        <div class="note-box"><strong>📋 מסך 13 – ניהול חוב:</strong> דרישות: 1.7.1.1 (בדיקת זכאות), 1.7.2.4 (חישוב חוב), מחיקת חוב הרשאת ספרן בלבד.</div>
+        <div class="alert warning" style="margin-bottom:16px">⚠️ לתלמידה זו יש <strong>2 ספרים באיחור</strong>. היא חסומה מהשאלה חדשה עד להסדרה.</div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">⚠️ חובות פעילים</div>
+            <table>
+              <tr><th>ספר</th><th>איחור</th><th>הערה</th></tr>
+              <tr><td>ביולוגיה ט'</td><td><span class="badge danger">5 ימים</span></td><td>ללא נזק</td></tr>
+              <tr><td>אנגלית י'</td><td><span class="badge warning">2 ימים</span></td><td>-</td></tr>
+            </table>
+            <hr class="divider">
+            <div style="font-size:13px">
+              <div><strong>סטטוס:</strong> <span class="badge danger">חסומה</span></div>
+              <div style="margin-top:6px"><strong>הסדרת החוב:</strong> יש להחזיר את שני הספרים</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">🛠️ פעולות ניהוליות</div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <button class="btn btn-outline">📱 שלח תזכורת WhatsApp</button>
+              <button class="btn btn-outline">📧 שלח מייל לתלמידה</button>
+              <button class="btn btn-outline">📧 שלח מייל להורים</button>
+              <hr class="divider">
+              <button class="btn btn-danger btn-sm">🗑️ מחק חוב ידנית</button>
+              <div style="font-size:11px;color:var(--text3)">הרשאת ספרן בלבד. נדרש נימוק.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-nav">
+        <button class="btn btn-outline btn-sm" onclick="goTo('s5b')">← חזרה לפרופיל</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 6a: דוח השאלות -->
+<div class="screen" id="s6a">
+  <div class="shell">
+    <nav class="sidebar">
+      <div class="sidebar-logo"><h1>📚 Beit Jan<br>Smart Library</h1><p>מערכת ניהול ספרייה</p></div>
+      <div class="sidebar-user"><div class="role">👩‍💼 ספרנית</div><div class="name">סיהאם עטילה</div></div>
+      <div class="nav-section"><div class="nav-label">ראשי</div><div class="nav-item" onclick="goTo('s1')"><span class="icon">🏠</span> לוח בקרה</div></div>
+      <div class="nav-section"><div class="nav-label">תהליכים</div>
+        <div class="nav-item" onclick="goTo('s2a')"><span class="icon">📖</span> השאלת ספר</div>
+        <div class="nav-item" onclick="goTo('s3a')"><span class="icon">↩️</span> החזרת ספר</div>
+        <div class="nav-item" onclick="goTo('s4a')"><span class="icon">📦</span> ניהול מלאי</div>
+        <div class="nav-item" onclick="goTo('s5a')"><span class="icon">👥</span> ניהול תלמידים</div>
+      </div>
+      <div class="nav-section"><div class="nav-label">דוחות</div>
+        <div class="nav-item active"><span class="icon">📊</span> דוח השאלות</div>
+        <div class="nav-item" onclick="goTo('s6b')"><span class="icon">⚠️</span> דוח איחורים</div>
+        <div class="nav-item" onclick="goTo('s6c')"><span class="icon">📋</span> דוח מלאי</div>
+      </div>
+      <div class="sidebar-footer"><button class="btn-logout" onclick="goTo('s0')">🚪 יציאה</button></div>
+    </nav>
+    <div class="main">
+      <div class="topbar">
+        <span class="topbar-title">דוח השאלות והחזרות</span>
+        <div class="topbar-actions">
+          <button class="lang-btn">עב / ع / EN</button>
+          <button class="btn btn-outline btn-sm">⬇️ ייצוא PDF</button>
+        </div>
+      </div>
+      <div class="content">
+        <div class="note-box"><strong>📋 מסך 14 – דוח השאלות:</strong> דרישות: 1.7.3.1 (דוח השאלות פעילות, ריכוז החזרות, מלאי זמין). מיועד לספרנית ולהנהלה. תדירות: יומי.</div>
+        <div class="card" style="margin-bottom:14px">
+          <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end">
+            <div class="form-group" style="margin-bottom:0;flex:1;min-width:140px">
+              <label class="form-label">מתאריך</label>
+              <input class="form-control" type="date" value="2026-05-01">
+            </div>
+            <div class="form-group" style="margin-bottom:0;flex:1;min-width:140px">
+              <label class="form-label">עד תאריך</label>
+              <input class="form-control" type="date" value="2026-05-19">
+            </div>
+            <div class="form-group" style="margin-bottom:0;flex:1;min-width:140px">
+              <label class="form-label">כיתה</label>
+              <select class="form-control"><option>כל הכיתות</option><option>י"א</option><option>י"ב</option></select>
+            </div>
+            <button class="btn btn-primary">הפק דוח</button>
+          </div>
+        </div>
+        <div class="grid-4" style="margin-bottom:16px">
+          <div class="stat-card"><div class="stat-icon">📖</div><div class="stat-num">87</div><div class="stat-label">השאלות בחודש</div></div>
+          <div class="stat-card success"><div class="stat-icon">↩️</div><div class="stat-num">62</div><div class="stat-label">החזרות בחודש</div></div>
+          <div class="stat-card accent"><div class="stat-icon">📚</div><div class="stat-num">47</div><div class="stat-label">פעילות כרגע</div></div>
+          <div class="stat-card danger"><div class="stat-icon">⏰</div><div class="stat-num">8</div><div class="stat-label">באיחור</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">📋 רשימת השאלות פעילות</div>
+          <div class="table-wrap">
+            <table>
+              <tr><th>תלמיד</th><th>ספר</th><th>תאריך השאלה</th><th>תאריך החזרה</th><th>סטטוס</th></tr>
+              <tr><td>דניאל כהן</td><td>מחשבים ורשתות</td><td>19.5.2026</td><td>2.6.2026</td><td><span class="badge success">בזמן</span></td></tr>
+              <tr><td>לינה עמאר</td><td>ביולוגיה ט'</td><td>10.5.2026</td><td>24.5.2026</td><td><span class="badge warning">5 ימי איחור</span></td></tr>
+              <tr><td>ראמי נאסר</td><td>היסטוריה י"א</td><td>4.5.2026</td><td>18.5.2026</td><td><span class="badge warning">3 ימי איחור</span></td></tr>
+              <tr><td>יוסף סלים</td><td>אנגלית י'</td><td>2.5.2026</td><td>16.5.2026</td><td><span class="badge danger">12 ימי איחור</span></td></tr>
+              <tr><td>מאיה קדיר</td><td>ספרות עברית</td><td>15.5.2026</td><td>29.5.2026</td><td><span class="badge success">בזמן</span></td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 6b: דוח איחורים -->
+<div class="screen" id="s6b">
+  <div class="shell">
+    <nav class="sidebar">
+      <div class="sidebar-logo"><h1>📚 Beit Jan<br>Smart Library</h1><p>מערכת ניהול ספרייה</p></div>
+      <div class="sidebar-user"><div class="role">👩‍💼 ספרנית</div><div class="name">סיהאם עטילה</div></div>
+      <div class="nav-section"><div class="nav-label">ראשי</div><div class="nav-item" onclick="goTo('s1')"><span class="icon">🏠</span> לוח בקרה</div></div>
+      <div class="nav-section"><div class="nav-label">תהליכים</div>
+        <div class="nav-item" onclick="goTo('s2a')"><span class="icon">📖</span> השאלת ספר</div>
+        <div class="nav-item" onclick="goTo('s3a')"><span class="icon">↩️</span> החזרת ספר</div>
+        <div class="nav-item" onclick="goTo('s4a')"><span class="icon">📦</span> ניהול מלאי</div>
+        <div class="nav-item" onclick="goTo('s5a')"><span class="icon">👥</span> ניהול תלמידים</div>
+      </div>
+      <div class="nav-section"><div class="nav-label">דוחות</div>
+        <div class="nav-item" onclick="goTo('s6a')"><span class="icon">📊</span> דוח השאלות</div>
+        <div class="nav-item active"><span class="icon">⚠️</span> דוח איחורים</div>
+        <div class="nav-item" onclick="goTo('s6c')"><span class="icon">📋</span> דוח מלאי</div>
+      </div>
+      <div class="sidebar-footer"><button class="btn-logout" onclick="goTo('s0')">🚪 יציאה</button></div>
+    </nav>
+    <div class="main">
+      <div class="topbar">
+        <span class="topbar-title">דוח איחורים וחריגות</span>
+        <div class="topbar-actions">
+          <button class="lang-btn">עב / ع / EN</button>
+          <button class="btn btn-accent btn-sm">📱 שלח תזכורות לכולם</button>
+        </div>
+      </div>
+      <div class="content">
+        <div class="note-box"><strong>📋 מסך 15 – דוח איחורים:</strong> דרישות: 1.7.3.2 (שליפת נתוני איחור, חישוב ימים, בקרת חובות). תדירות: יומי לספרנית.</div>
+        <div class="alert danger" style="margin-bottom:16px">⚠️ <strong>8 תלמידים</strong> עם ספרים באיחור. מומלץ לשלוח תזכורות.</div>
+        <div class="card">
+          <div class="card-title">⏰ תלמידים עם איחורים</div>
+          <div class="table-wrap">
+            <table>
+              <tr><th>תלמיד</th><th>כיתה</th><th>ספר</th><th>מ.החזרה</th><th>ימי איחור</th><th>פעולה</th></tr>
+              <tr>
+                <td>יוסף סלים</td><td>י"ב 1</td><td>מחשבים ורשתות</td><td>7.5.2026</td>
+                <td><span class="badge danger">12 ימים</span></td>
+                <td><button class="btn btn-sm btn-accent" onclick="goTo('s5b')">📱 תזכורת</button></td>
+              </tr>
+              <tr>
+                <td>לינה עמאר</td><td>י"א 1</td><td>ביולוגיה ט'</td><td>14.5.2026</td>
+                <td><span class="badge danger">5 ימים</span></td>
+                <td><button class="btn btn-sm btn-accent" onclick="goTo('s5b')">📱 תזכורת</button></td>
+              </tr>
+              <tr>
+                <td>ראמי נאסר</td><td>י"א 2</td><td>היסטוריה י"א</td><td>16.5.2026</td>
+                <td><span class="badge warning">3 ימים</span></td>
+                <td><button class="btn btn-sm btn-accent" onclick="goTo('s5b')">📱 תזכורת</button></td>
+              </tr>
+              <tr>
+                <td>לינה עמאר</td><td>י"א 1</td><td>אנגלית י'</td><td>17.5.2026</td>
+                <td><span class="badge warning">2 ימים</span></td>
+                <td><button class="btn btn-sm btn-accent">📱 תזכורת</button></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 6c: דוח מלאי -->
+<div class="screen" id="s6c">
+  <div class="shell">
+    <nav class="sidebar">
+      <div class="sidebar-logo"><h1>📚 Beit Jan<br>Smart Library</h1><p>מערכת ניהול ספרייה</p></div>
+      <div class="sidebar-user"><div class="role">👩‍💼 ספרנית</div><div class="name">סיהאם עטילה</div></div>
+      <div class="nav-section"><div class="nav-label">ראשי</div><div class="nav-item" onclick="goTo('s1')"><span class="icon">🏠</span> לוח בקרה</div></div>
+      <div class="nav-section"><div class="nav-label">תהליכים</div>
+        <div class="nav-item" onclick="goTo('s2a')"><span class="icon">📖</span> השאלת ספר</div>
+        <div class="nav-item" onclick="goTo('s3a')"><span class="icon">↩️</span> החזרת ספר</div>
+        <div class="nav-item" onclick="goTo('s4a')"><span class="icon">📦</span> ניהול מלאי</div>
+        <div class="nav-item" onclick="goTo('s5a')"><span class="icon">👥</span> ניהול תלמידים</div>
+      </div>
+      <div class="nav-section"><div class="nav-label">דוחות</div>
+        <div class="nav-item" onclick="goTo('s6a')"><span class="icon">📊</span> דוח השאלות</div>
+        <div class="nav-item" onclick="goTo('s6b')"><span class="icon">⚠️</span> דוח איחורים</div>
+        <div class="nav-item active"><span class="icon">📋</span> דוח מלאי</div>
+      </div>
+      <div class="sidebar-footer"><button class="btn-logout" onclick="goTo('s0')">🚪 יציאה</button></div>
+    </nav>
+    <div class="main">
+      <div class="topbar">
+        <span class="topbar-title">דוח מצב מלאי</span>
+        <div class="topbar-actions">
+          <button class="lang-btn">עב / ع / EN</button>
+          <button class="btn btn-outline btn-sm">⬇️ ייצוא Excel</button>
+        </div>
+      </div>
+      <div class="content">
+        <div class="note-box"><strong>📋 מסך 16 – דוח מלאי:</strong> דרישות: 1.7.3.1 (רשימת מלאי זמין), 1.7.3.3 (שאילתות לפי ז'אנר/שכבה). תדירות: שבועי.</div>
+        <div class="grid-4" style="margin-bottom:16px">
+          <div class="stat-card"><div class="stat-icon">📚</div><div class="stat-num">359</div><div class="stat-label">סה"כ ספרים</div></div>
+          <div class="stat-card success"><div class="stat-icon">✅</div><div class="stat-num">312</div><div class="stat-label">זמינים</div></div>
+          <div class="stat-card accent"><div class="stat-icon">📖</div><div class="stat-num">47</div><div class="stat-label">מושאלים</div></div>
+          <div class="stat-card danger"><div class="stat-icon">⚠️</div><div class="stat-num">7</div><div class="stat-label">פגומים</div></div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">📊 לפי ז'אנר</div>
+            <table>
+              <tr><th>ז'אנר</th><th>סה"כ</th><th>זמינים</th><th>מושאלים</th></tr>
+              <tr><td>לימוד</td><td>142</td><td>118</td><td>24</td></tr>
+              <tr><td>מדע</td><td>68</td><td>55</td><td>13</td></tr>
+              <tr><td>ספרות</td><td>74</td><td>71</td><td>3</td></tr>
+              <tr><td>היסטוריה</td><td>45</td><td>42</td><td>3</td></tr>
+              <tr><td>טכנולוגיה</td><td>30</td><td>26</td><td>4</td></tr>
+            </table>
+          </div>
+          <div class="card">
+            <div class="card-title">🔥 ספרים פופולריים</div>
+            <table>
+              <tr><th>ספר</th><th>השאלות</th></tr>
+              <tr><td>מתמטיקה 5 יח"ל</td><td>38</td></tr>
+              <tr><td>ביולוגיה ט'</td><td>31</td></tr>
+              <tr><td>מחשבים ורשתות</td><td>28</td></tr>
+              <tr><td>אנגלית י'</td><td>25</td></tr>
+              <tr><td>פיזיקה י'</td><td>22</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     STUDENT SCREENS
+══════════════════════════════════ -->
+
+<!-- ST1: תלמיד – דף בית -->
+<div class="screen" id="st1">
+  <div class="shell">
+    <nav class="sidebar" style="background:#1D6B8A">
+      <div class="sidebar-logo"><h1>📚 Beit Jan<br>Smart Library</h1><p>מערכת ניהול ספרייה</p></div>
+      <div class="sidebar-user"><div class="role">🎒 תלמיד</div><div class="name">דניאל כהן</div></div>
+      <div class="nav-section"><div class="nav-label">ראשי</div>
+        <div class="nav-item active" onclick="goTo('st1')"><span class="icon">🏠</span> הדף שלי</div>
+      </div>
+      <div class="nav-section"><div class="nav-label">ספרים</div>
+        <div class="nav-item" onclick="goTo('st2')"><span class="icon">🔍</span> חיפוש ספרים</div>
+        <div class="nav-item" onclick="goTo('st3')"><span class="icon">🔖</span> שריון ספר</div>
+      </div>
+      <div class="nav-section"><div class="nav-label">האזור שלי</div>
+        <div class="nav-item" onclick="goTo('st4')"><span class="icon">📖</span> ההשאלות שלי</div>
+        <div class="nav-item" onclick="goTo('st5')"><span class="icon">📜</span> היסטוריית קריאה</div>
+      </div>
+      <div class="sidebar-footer"><button class="btn-logout" onclick="goTo('s0')">🚪 יציאה</button></div>
+    </nav>
+    <div class="main">
+      <div class="topbar">
+        <span class="topbar-title">שלום דניאל 👋</span>
+        <div class="topbar-actions"><button class="lang-btn" onclick="toggleLang()">עב / ع / EN</button></div>
+      </div>
+      <div class="content">
+        <div class="note-box"><strong>📋 מסך תלמיד 1 – דף הבית:</strong> סיכום אישי לתלמיד. ספרים מושאלים, תאריכי החזרה, ספרים שריינתי.</div>
+        <div class="page-header"><h2>שלום דניאל, ברוך הבא 📚</h2><p>כיתה י"א 3 | תיכון בית ג'ן</p></div>
+        <div class="grid-3" style="margin-bottom:20px">
+          <div class="stat-card" onclick="goTo('st4')"><div class="stat-icon">📖</div><div class="stat-num">1</div><div class="stat-label">ספרים מושאלים</div></div>
+          <div class="stat-card accent" onclick="goTo('st3')"><div class="stat-icon">🔖</div><div class="stat-num">0</div><div class="stat-label">ספרים שריינתי</div></div>
+          <div class="stat-card success"><div class="stat-icon">✅</div><div class="stat-num">12</div><div class="stat-label">ספרים שהחזרתי</div></div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">📖 ספרים מושאלים כרגע</div>
+            <div style="background:var(--surface2);border-radius:var(--radius-sm);padding:14px;display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <div style="font-weight:700;font-size:14px">מחשבים ורשתות – מבוא</div>
+                <div style="font-size:12px;color:var(--text3);margin-top:3px">מדף A3-12</div>
+                <div style="margin-top:6px"><span class="badge success">📅 החזרה: 2.6.2026</span></div>
+              </div>
+              <div style="font-size:32px">💻</div>
+            </div>
+            <div class="actions-row" style="margin-top:12px">
+              <button class="btn btn-outline btn-sm" onclick="goTo('st4')">👁️ כל ההשאלות</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">⚡ פעולות מהירות</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <button class="btn btn-primary" onclick="goTo('st2')">🔍 חפש ספר</button>
+              <button class="btn btn-outline" onclick="goTo('st3')">🔖 שריין ספר</button>
+              <button class="btn btn-outline" onclick="goTo('st5')">📜 היסטוריית קריאה</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ST2: תלמיד – חיפוש ספרים -->
+<div class="screen" id="st2">
+  <div class="shell">
+    <nav class="sidebar" style="background:#1D6B8A">
+      <div class="sidebar-logo"><h1>📚 Beit Jan<br>Smart Library</h1><p>מערכת ניהול ספרייה</p></div>
+      <div class="sidebar-user"><div class="role">🎒 תלמיד</div><div class="name">דניאל כהן</div></div>
+      <div class="nav-section"><div class="nav-label">ראשי</div><div class="nav-item" onclick="goTo('st1')"><span class="icon">🏠</span> הדף שלי</div></div>
+      <div class="nav-section"><div class="nav-label">ספרים</div>
+        <div class="nav-item active"><span class="icon">🔍</span> חיפוש ספרים</div>
+        <div class="nav-item" onclick="goTo('st3')"><span class="icon">🔖</span> שריון ספר</div>
+      </div>
+      <div class="nav-section"><div class="nav-label">האזור שלי</div>
+        <div class="nav-item" onclick="goTo('st4')"><span class="icon">📖</span> ההשאלות שלי</div>
+        <div class="nav-item" onclick="goTo('st5')"><span class="icon">📜</span> היסטוריית קריאה</div>
+      </div>
+      <div class="sidebar-footer"><button class="btn-logout" onclick="goTo('s0')">🚪 יציאה</button></div>
+    </nav>
+    <div class="main">
+      <div class="topbar">
+        <span class="topbar-title">חיפוש ספרים</span>
+        <div class="topbar-actions"><button class="lang-btn" onclick="toggleLang()">עב / ع / EN</button></div>
+      </div>
+      <div class="content">
+        <div class="note-box"><strong>📋 מסך תלמיד 2 – חיפוש ספרים:</strong> דרישות: 1.7.1.2 (חיפוש מתקדם לפי שם/מחבר/ז'אנר), 1.7.1.3 (סטטוס זמינות).</div>
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-title">🔍 חיפוש מתקדם</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <input class="form-control" placeholder="שם הספר או מחבר..." style="flex:2;min-width:200px" value="מחשבים">
+            <select class="form-control" style="flex:1;min-width:130px"><option>כל הז'אנרים</option><option>מדע</option><option>ספרות</option><option>היסטוריה</option><option>טכנולוגיה</option></select>
+            <button class="btn btn-primary">🔍 חפש</button>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="book-card" onclick="goTo('st3')">
+            <div class="book-cover">💻</div>
+            <div class="book-info" style="flex:1">
+              <h4>מחשבים ורשתות – מבוא</h4>
+              <p>ד"ר יואל לוי | מדף: A3-12</p>
+              <span class="badge success">✅ זמין להשאלה</span>
+            </div>
+            <button class="btn btn-accent btn-sm" onclick="goTo('st3')">🔖 שריין</button>
+          </div>
+          <div class="book-card">
+            <div class="book-cover">🖥️</div>
+            <div class="book-info" style="flex:1">
+              <h4>יסודות תכנות Python</h4>
+              <p>מירי כהן | מדף: A3-15</p>
+              <span class="badge danger">❌ מושאל – חזרה ב-25.5</span>
+            </div>
+            <button class="btn btn-outline btn-sm" disabled>לא זמין</button>
+          </div>
+          <div class="book-card" onclick="goTo('st3')">
+            <div class="book-cover">🔬</div>
+            <div class="book-info" style="flex:1">
+              <h4>מדעי המחשב לבגרות</h4>
+              <p>נועה ברק | מדף: A4-02</p>
+              <span class="badge success">✅ זמין להשאלה</span>
+            </div>
+            <button class="btn btn-accent btn-sm" onclick="goTo('st3')">🔖 שריין</button>
+          </div>
+          <div class="book-card">
+            <div class="book-cover">📡</div>
+            <div class="book-info" style="flex:1">
+              <h4>רשתות תקשורת מתקדמות</h4>
+              <p>פרופ' בן-דוד | מדף: A3-20</p>
+              <span class="badge warning">🔖 שריון פעיל</span>
+            </div>
+            <button class="btn btn-outline btn-sm" disabled>שריון פעיל</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ST3: תלמיד – שריון ספר -->
+<div class="screen" id="st3">
+  <div class="shell">
+    <nav class="sidebar" style="background:#1D6B8A">
+      <div class="sidebar-logo"><h1>📚 Beit Jan<br>Smart Library</h1><p>מערכת ניהול ספרייה</p></div>
+      <div class="sidebar-user"><div class="role">🎒 תלמיד</div><div class="name">דניאל כהן</div></div>
+      <div class="nav-section"><div class="nav-label">ראשי</div><div class="nav-item" onclick="goTo('st1')"><span class="icon">🏠</span> הדף שלי</div></div>
+      <div class="nav-section"><div class="nav-label">ספרים</div>
+        <div class="nav-item" onclick="goTo('st2')"><span class="icon">🔍</span> חיפוש ספרים</div>
+        <div class="nav-item active"><span class="icon">🔖</span> שריון ספר</div>
+      </div>
+      <div class="nav-section"><div class="nav-label">האזור שלי</div>
+        <div class="nav-item" onclick="goTo('st4')"><span class="icon">📖</span> ההשאלות שלי</div>
+        <div class="nav-item" onclick="goTo('st5')"><span class="icon">📜</span> היסטוריית קריאה</div>
+      </div>
+      <div class="sidebar-footer"><button class="btn-logout" onclick="goTo('s0')">🚪 יציאה</button></div>
+    </nav>
+    <div class="main">
+      <div class="topbar">
+        <span class="topbar-title">שריון ספר</span>
+        <div class="topbar-actions"><button class="lang-btn" onclick="toggleLang()">עב / ع / EN</button></div>
+      </div>
+      <div class="content">
+        <div class="note-box"><strong>📋 מסך תלמיד 3 – שריון ספר:</strong> דרישות: 1.7.1.4 (שריון עם חותמת זמן וביטול אוטומטי). התלמיד יכול לשריין מרחוק.</div>
+        <div class="alert info">🔖 שריון שומר עליך את הספר למשך <strong>48 שעות</strong>. לאחר מכן הוא משוחרר אוטומטית.</div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">📖 הספר שבחרת</div>
+            <div style="display:flex;gap:14px;align-items:flex-start;margin-bottom:16px">
+              <div class="book-cover" style="width:60px;height:80px;font-size:28px">💻</div>
+              <div>
+                <div style="font-weight:700;font-size:15px">מחשבים ורשתות – מבוא</div>
+                <div style="color:var(--text3);font-size:12px;margin-top:3px">ד"ר יואל לוי</div>
+                <div style="margin-top:6px"><span class="badge success">✅ זמין</span></div>
+                <div style="font-size:12px;color:var(--text3);margin-top:6px">מדף: A3-12</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">מתי תגיע לאסוף?</label>
+              <input class="form-control" type="date" value="2026-05-20">
+            </div>
+            <button class="btn btn-accent" style="width:100%" onclick="showReservationSuccess()">🔖 אשר שריון</button>
+          </div>
+          <div class="card" id="reservation-success" style="display:none">
+            <div style="text-align:center;padding:20px">
+              <div style="font-size:48px;margin-bottom:12px">✅</div>
+              <div style="font-family:var(--font-head);font-size:18px;color:var(--success);margin-bottom:8px">השריון אושר!</div>
+              <div style="font-size:13px;color:var(--text3);margin-bottom:16px">הספר שמור עבורך עד ל-21.5.2026 בשעה 12:00</div>
+              <div style="background:var(--success-bg);border-radius:var(--radius-sm);padding:12px;font-size:12px;color:var(--success);margin-bottom:14px">📱 אישור נשלח ל-WhatsApp שלך</div>
+              <button class="btn btn-outline btn-sm" onclick="goTo('st1')">← חזרה לדף הבית</button>
+            </div>
+          </div>
+          <div class="card" id="reservation-info">
+            <div class="card-title">ℹ️ כללי השריון</div>
+            <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;color:var(--text2)">
+              <div>⏰ השריון תקף ל-<strong>48 שעות</strong> בלבד</div>
+              <div>❌ ביטול אוטומטי אם לא תגיע</div>
+              <div>📱 תקבל תזכורת שעתיים לפני פקיעה</div>
+              <div>🚫 ניתן לשריין ספר אחד בכל פעם</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ST4: תלמיד – ההשאלות שלי -->
+<div class="screen" id="st4">
+  <div class="shell">
+    <nav class="sidebar" style="background:#1D6B8A">
+      <div class="sidebar-logo"><h1>📚 Beit Jan<br>Smart Library</h1><p>מערכת ניהול ספרייה</p></div>
+      <div class="sidebar-user"><div class="role">🎒 תלמיד</div><div class="name">דניאל כהן</div></div>
+      <div class="nav-section"><div class="nav-label">ראשי</div><div class="nav-item" onclick="goTo('st1')"><span class="icon">🏠</span> הדף שלי</div></div>
+      <div class="nav-section"><div class="nav-label">ספרים</div>
+        <div class="nav-item" onclick="goTo('st2')"><span class="icon">🔍</span> חיפוש ספרים</div>
+        <div class="nav-item" onclick="goTo('st3')"><span class="icon">🔖</span> שריון ספר</div>
+      </div>
+      <div class="nav-section"><div class="nav-label">האזור שלי</div>
+        <div class="nav-item active"><span class="icon">📖</span> ההשאלות שלי</div>
+        <div class="nav-item" onclick="goTo('st5')"><span class="icon">📜</span> היסטוריית קריאה</div>
+      </div>
+      <div class="sidebar-footer"><button class="btn-logout" onclick="goTo('s0')">🚪 יציאה</button></div>
+    </nav>
+    <div class="main">
+      <div class="topbar">
+        <span class="topbar-title">ההשאלות שלי</span>
+        <div class="topbar-actions"><button class="lang-btn" onclick="toggleLang()">עב / ع / EN</button></div>
+      </div>
+      <div class="content">
+        <div class="note-box"><strong>📋 מסך תלמיד 4 – ההשאלות שלי:</strong> התלמיד רואה את ספריו המושאלים, תאריכי החזרה וסטטוס. דרישות: אזור אישי, שקיפות מידע.</div>
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-title">📖 ספרים מושאלים כרגע (1)</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="background:var(--success-bg);border:1px solid #b5dfc6;border-radius:var(--radius-sm);padding:14px;display:flex;justify-content:space-between;align-items:center;gap:12px">
+              <div style="font-size:28px">💻</div>
+              <div style="flex:1">
+                <div style="font-weight:700">מחשבים ורשתות – מבוא</div>
+                <div style="font-size:12px;color:var(--text3)">הושאל: 19.5.2026 | מדף: A3-12</div>
+              </div>
+              <div style="text-align:center">
+                <div style="font-size:11px;color:var(--text3)">החזרה</div>
+                <div style="font-weight:700;color:var(--success)">2.6.2026</div>
+                <span class="badge success">14 ימים</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">✅ חובות וסטטוס</div>
+          <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--success-bg);border-radius:var(--radius-sm)">
+            <div style="font-size:32px">😊</div>
+            <div>
+              <div style="font-weight:700;color:var(--success)">אין חובות פעילים</div>
+              <div style="font-size:12px;color:var(--text3)">אתה רשאי להשאיל עוד 2 ספרים</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ST5: תלמיד – היסטוריה -->
+<div class="screen" id="st5">
+  <div class="shell">
+    <nav class="sidebar" style="background:#1D6B8A">
+      <div class="sidebar-logo"><h1>📚 Beit Jan<br>Smart Library</h1><p>מערכת ניהול ספרייה</p></div>
+      <div class="sidebar-user"><div class="role">🎒 תלמיד</div><div class="name">דניאל כהן</div></div>
+      <div class="nav-section"><div class="nav-label">ראשי</div><div class="nav-item" onclick="goTo('st1')"><span class="icon">🏠</span> הדף שלי</div></div>
+      <div class="nav-section"><div class="nav-label">ספרים</div>
+        <div class="nav-item" onclick="goTo('st2')"><span class="icon">🔍</span> חיפוש ספרים</div>
+        <div class="nav-item" onclick="goTo('st3')"><span class="icon">🔖</span> שריון ספר</div>
+      </div>
+      <div class="nav-section"><div class="nav-label">האזור שלי</div>
+        <div class="nav-item" onclick="goTo('st4')"><span class="icon">📖</span> ההשאלות שלי</div>
+        <div class="nav-item active"><span class="icon">📜</span> היסטוריית קריאה</div>
+      </div>
+      <div class="sidebar-footer"><button class="btn-logout" onclick="goTo('s0')">🚪 יציאה</button></div>
+    </nav>
+    <div class="main">
+      <div class="topbar">
+        <span class="topbar-title">היסטוריית קריאה</span>
+        <div class="topbar-actions"><button class="lang-btn" onclick="toggleLang()">עב / ع / EN</button></div>
+      </div>
+      <div class="content">
+        <div class="note-box"><strong>📋 מסך תלמיד 5 – היסטוריה:</strong> התלמיד רואה את כל הספרים שהשאיל בעבר. דרישות: שקיפות מידע, היסטוריית השאלות.</div>
+        <div class="card">
+          <div class="card-title">📜 ספרים שהחזרתי (12 סה"כ)</div>
+          <div class="table-wrap">
+            <table>
+              <tr><th>ספר</th><th>תאריך השאלה</th><th>תאריך החזרה</th><th>סטטוס</th></tr>
+              <tr><td>ביולוגיה ט'</td><td>15.3.2026</td><td>1.4.2026</td><td><span class="badge success">הוחזר בזמן</span></td></tr>
+              <tr><td>אנגלית ח'</td><td>1.2.2026</td><td>10.3.2026</td><td><span class="badge success">הוחזר בזמן</span></td></tr>
+              <tr><td>היסטוריה י'</td><td>5.1.2026</td><td>25.1.2026</td><td><span class="badge warning">איחור 2 ימים</span></td></tr>
+              <tr><td>פיזיקה ט'</td><td>1.12.2025</td><td>15.12.2025</td><td><span class="badge success">הוחזר בזמן</span></td></tr>
+              <tr><td>מתמטיקה</td><td>1.11.2025</td><td>20.11.2025</td><td><span class="badge success">הוחזר בזמן</span></td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     ADMIN SCREENS
+══════════════════════════════════ -->
+
+<!-- AD1: הנהלה – דשבורד -->
+<div class="screen" id="ad1">
+  <div class="shell">
+    <nav class="sidebar" style="background:#3D4A2E">
+      <div class="sidebar-logo"><h1>📚 Beit Jan<br>Smart Library</h1><p>מערכת ניהול ספרייה</p></div>
+      <div class="sidebar-user"><div class="role">🏫 הנהלה</div><div class="name">מנהל בית הספר</div></div>
+      <div class="nav-section"><div class="nav-label">ראשי</div>
+        <div class="nav-item active" onclick="goTo('ad1')"><span class="icon">📊</span> דשבורד</div>
+      </div>
+      <div class="nav-section"><div class="nav-label">דוחות</div>
+        <div class="nav-item" onclick="goTo('ad2')"><span class="icon">📈</span> סטטיסטיקות</div>
+        <div class="nav-item" onclick="goTo('ad3')"><span class="icon">📋</span> דוחות ניהוליים</div>
+      </div>
+      <div class="nav-section"><div class="nav-label">ניהול</div>
+        <div class="nav-item" onclick="goTo('ad4')"><span class="icon">👥</span> ניהול משתמשים</div>
+        <div class="nav-item" onclick="goTo('ad5')"><span class="icon">⚙️</span> הגדרות מערכת</div>
+      </div>
+      <div class="sidebar-footer"><button class="btn-logout" onclick="goTo('s0')">🚪 יציאה</button></div>
+    </nav>
+    <div class="main">
+      <div class="topbar">
+        <span class="topbar-title">דשבורד ניהולי</span>
+        <div class="topbar-actions">
+          <button class="lang-btn" onclick="toggleLang()">עב / ع / EN</button>
+          <span style="font-size:12px;color:var(--text3)">מאי 2026</span>
+        </div>
+      </div>
+      <div class="content">
+        <div class="note-box"><strong>📋 מסך הנהלה 1 – דשבורד:</strong> תצוגה ויזואלית למנהל. דרישות: 1.7.3.4 (מדדי ביצוע, מגמות קריאה, ניצול משאבים).</div>
+        <div class="page-header"><h2>סיכום פעילות ספריית בית ג'ן</h2><p>סמסטר ב' תשפ"ו | עדכון אחרון: 19.5.2026</p></div>
+        <div class="grid-4" style="margin-bottom:20px">
+          <div class="stat-card accent"><div class="stat-icon">📖</div><div class="stat-num">87</div><div class="stat-label">השאלות החודש</div></div>
+          <div class="stat-card success"><div class="stat-icon">↩️</div><div class="stat-num">62</div><div class="stat-label">החזרות החודש</div></div>
+          <div class="stat-card danger"><div class="stat-icon">⏰</div><div class="stat-num">8</div><div class="stat-label">איחורים פעילים</div></div>
+          <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-num">341</div><div class="stat-label">תלמידים פעילים</div></div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">📈 מגמת השאלות – חודשי</div>
+            <div style="display:flex;align-items:flex-end;gap:8px;height:100px;padding:8px 0">
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><div style="background:var(--accent);width:100%;height:60px;border-radius:3px 3px 0 0;opacity:0.7"></div><div style="font-size:10px;color:var(--text3)">ינואר</div></div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><div style="background:var(--accent);width:100%;height:75px;border-radius:3px 3px 0 0;opacity:0.8"></div><div style="font-size:10px;color:var(--text3)">פברואר</div></div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><div style="background:var(--accent);width:100%;height:90px;border-radius:3px 3px 0 0;opacity:0.85"></div><div style="font-size:10px;color:var(--text3)">מרץ</div></div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><div style="background:var(--accent);width:100%;height:70px;border-radius:3px 3px 0 0;opacity:0.75"></div><div style="font-size:10px;color:var(--text3)">אפריל</div></div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><div style="background:var(--primary);width:100%;height:87px;border-radius:3px 3px 0 0"></div><div style="font-size:10px;color:var(--text3)">מאי</div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">🏆 פעילות לפי כיתה</div>
+            <table>
+              <tr><th>כיתה</th><th>השאלות</th><th>איחורים</th></tr>
+              <tr><td>י"א 1</td><td>24</td><td><span class="badge warning">2</span></td></tr>
+              <tr><td>י"א 2</td><td>31</td><td><span class="badge success">0</span></td></tr>
+              <tr><td>י"א 3</td><td>18</td><td><span class="badge warning">1</span></td></tr>
+              <tr><td>י"ב 1</td><td>14</td><td><span class="badge danger">5</span></td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AD2: הנהלה – סטטיסטיקות -->
+<div class="screen" id="ad2">
+  <div class="shell">
+    <nav class="sidebar" style="background:#3D4A2E">
+      <div class="sidebar-logo"><h1>📚 Beit Jan<br>Smart Library</h1><p>מערכת ניהול ספרייה</p></div>
+      <div class="sidebar-user"><div class="role">🏫 הנהלה</div><div class="name">מנהל בית הספר</div></div>
+      <div class="nav-section"><div class="nav-label">ראשי</div><div class="nav-item" onclick="goTo('ad1')"><span class="icon">📊</span> דשבורד</div></div>
+      <div class="nav-section"><div class="nav-label">דוחות</div>
+        <div class="nav-item active"><span class="icon">📈</span> סטטיסטיקות</div>
+        <div class="nav-item" onclick="goTo('ad3')"><span class="icon">📋</span> דוחות ניהוליים</div>
+      </div>
+      <div class="nav-section"><div class="nav-label">ניהול</div>
+        <div class="nav-item" onclick="goTo('ad4')"><span class="icon">👥</span> ניהול משתמשים</div>
+        <div class="nav-item" onclick="goTo('ad5')"><span class="icon">⚙️</span> הגדרות מערכת</div>
+      </div>
+      <div class="sidebar-footer"><button class="btn-logout" onclick="goTo('s0')">🚪 יציאה</button></div>
+    </nav>
+    <div class="main">
+      <div class="topbar">
+        <span class="topbar-title">סטטיסטיקות ספרייה</span>
+        <div class="topbar-actions"><button class="lang-btn" onclick="toggleLang()">עב / ع / EN</button><button class="btn btn-outline btn-sm">⬇️ ייצוא</button></div>
+      </div>
+      <div class="content">
+        <div class="note-box"><strong>📋 מסך הנהלה 2 – סטטיסטיקות:</strong> דרישות: 1.7.3.3 (שאילתות מורכבות), 1.7.3.4 (תצוגה גרפית). מיועד למנהל, תדירות: חודשי.</div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">📚 ספרים פופולריים לפי שכבה</div>
+            <div class="form-group"><select class="form-control"><option>כל השכבות</option><option selected>י"א</option><option>י"ב</option></select></div>
+            <table>
+              <tr><th>ספר</th><th>השאלות</th><th>% זמינות</th></tr>
+              <tr><td>מתמטיקה 5 יח"ל</td><td>38</td><td><span class="badge success">72%</span></td></tr>
+              <tr><td>ביולוגיה ט'</td><td>31</td><td><span class="badge warning">45%</span></td></tr>
+              <tr><td>מחשבים ורשתות</td><td>28</td><td><span class="badge success">80%</span></td></tr>
+              <tr><td>אנגלית י'</td><td>25</td><td><span class="badge danger">20%</span></td></tr>
+            </table>
+          </div>
+          <div class="card">
+            <div class="card-title">📊 ניצול משאבי הספרייה</div>
+            <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px">
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>ספרי לימוד</span><span style="font-weight:700">83%</span></div>
+                <div style="background:var(--border);border-radius:20px;height:10px"><div style="background:var(--accent);width:83%;height:100%;border-radius:20px"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>ספרי ספרות</span><span style="font-weight:700">42%</span></div>
+                <div style="background:var(--border);border-radius:20px;height:10px"><div style="background:var(--primary);width:42%;height:100%;border-radius:20px"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>ספרי מדע</span><span style="font-weight:700">61%</span></div>
+                <div style="background:var(--border);border-radius:20px;height:10px"><div style="background:var(--success);width:61%;height:100%;border-radius:20px"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>טכנולוגיה</span><span style="font-weight:700">27%</span></div>
+                <div style="background:var(--border);border-radius:20px;height:10px"><div style="background:var(--info);width:27%;height:100%;border-radius:20px"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AD3: הנהלה – דוחות ניהוליים -->
+<div class="screen" id="ad3">
+  <div class="shell">
+    <nav class="sidebar" style="background:#3D4A2E">
+      <div class="sidebar-logo"><h1>📚 Beit Jan<br>Smart Library</h1><p>מערכת ניהול ספרייה</p></div>
+      <div class="sidebar-user"><div class="role">🏫 הנהלה</div><div class="name">מנהל בית הספר</div></div>
+      <div class="nav-section"><div class="nav-label">ראשי</div><div class="nav-item" onclick="goTo('ad1')"><span class="icon">📊</span> דשבורד</div></div>
+      <div class="nav-section"><div class="nav-label">דוחות</div>
+        <div class="nav-item" onclick="goTo('ad2')"><span class="icon">📈</span> סטטיסטיקות</div>
+        <div class="nav-item active"><span class="icon">📋</span> דוחות ניהוליים</div>
+      </div>
+      <div class="nav-section"><div class="nav-label">ניהול</div>
+        <div class="nav-item" onclick="goTo('ad4')"><span class="icon">👥</span> ניהול משתמשים</div>
+        <div class="nav-item" onclick="goTo('ad5')"><span class="icon">⚙️</span> הגדרות מערכת</div>
+      </div>
+      <div class="sidebar-footer"><button class="btn-logout" onclick="goTo('s0')">🚪 יציאה</button></div>
+    </nav>
+    <div class="main">
+      <div class="topbar">
+        <span class="topbar-title">דוחות ניהוליים</span>
+        <div class="topbar-actions"><button class="lang-btn" onclick="toggleLang()">עב / ع / EN</button></div>
+      </div>
+      <div class="content">
+        <div class="note-box"><strong>📋 מסך הנהלה 3 – דוחות:</strong> דרישות: 1.7.3.1, 1.7.3.2 – הפקת דוחות תוך פחות מ-5 דקות. תדירות: חודשי.</div>
+        <div class="grid-2">
+          <div class="card" style="cursor:pointer;transition:all 0.15s" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor=''">
+            <div style="font-size:28px;margin-bottom:8px">📊</div>
+            <div style="font-weight:700;margin-bottom:4px">דוח חודשי מלא</div>
+            <div style="font-size:12px;color:var(--text3);margin-bottom:12px">השאלות, החזרות, איחורים – מאי 2026</div>
+            <button class="btn btn-primary btn-sm">הפק דוח</button>
+          </div>
+          <div class="card" style="cursor:pointer;transition:all 0.15s" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor=''">
+            <div style="font-size:28px;margin-bottom:8px">⚠️</div>
+            <div style="font-weight:700;margin-bottom:4px">דוח איחורים וחובות</div>
+            <div style="font-size:12px;color:var(--text3);margin-bottom:12px">תלמידים עם ספרים שלא הוחזרו</div>
+            <button class="btn btn-outline btn-sm">הפק דוח</button>
+          </div>
+          <div class="card" style="cursor:pointer;transition:all 0.15s" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor=''">
+            <div style="font-size:28px;margin-bottom:8px">📚</div>
+            <div style="font-weight:700;margin-bottom:4px">ספרים פופולריים</div>
+            <div style="font-size:12px;color:var(--text3);margin-bottom:12px">לפי כיתה ולפי ז'אנר</div>
+            <button class="btn btn-outline btn-sm">הפק דוח</button>
+          </div>
+          <div class="card" style="cursor:pointer;transition:all 0.15s" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor=''">
+            <div style="font-size:28px;margin-bottom:8px">📦</div>
+            <div style="font-weight:700;margin-bottom:4px">מצב מלאי שנתי</div>
+            <div style="font-size:12px;color:var(--text3);margin-bottom:12px">ספרים שנוספו, נגרעו, פגומים</div>
+            <button class="btn btn-outline btn-sm">הפק דוח</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AD4: הנהלה – ניהול משתמשים -->
+<div class="screen" id="ad4">
+  <div class="shell">
+    <nav class="sidebar" style="background:#3D4A2E">
+      <div class="sidebar-logo"><h1>📚 Beit Jan<br>Smart Library</h1><p>מערכת ניהול ספרייה</p></div>
+      <div class="sidebar-user"><div class="role">🏫 הנהלה</div><div class="name">מנהל בית הספר</div></div>
+      <div class="nav-section"><div class="nav-label">ראשי</div><div class="nav-item" onclick="goTo('ad1')"><span class="icon">📊</span> דשבורד</div></div>
+      <div class="nav-section"><div class="nav-label">דוחות</div>
+        <div class="nav-item" onclick="goTo('ad2')"><span class="icon">📈</span> סטטיסטיקות</div>
+        <div class="nav-item" onclick="goTo('ad3')"><span class="icon">📋</span> דוחות ניהוליים</div>
+      </div>
+      <div class="nav-section"><div class="nav-label">ניהול</div>
+        <div class="nav-item active"><span class="icon">👥</span> ניהול משתמשים</div>
+        <div class="nav-item" onclick="goTo('ad5')"><span class="icon">⚙️</span> הגדרות מערכת</div>
+      </div>
+      <div class="sidebar-footer"><button class="btn-logout" onclick="goTo('s0')">🚪 יציאה</button></div>
+    </nav>
+    <div class="main">
+      <div class="topbar">
+        <span class="topbar-title">ניהול משתמשים</span>
+        <div class="topbar-actions"><button class="lang-btn" onclick="toggleLang()">עב / ع / EN</button><button class="btn btn-accent btn-sm">➕ משתמש חדש</button></div>
+      </div>
+      <div class="content">
+        <div class="note-box"><strong>📋 מסך הנהלה 4 – ניהול משתמשים:</strong> הוספת/עריכת משתמשים, שינוי הרשאות. דרישות: מדרג הרשאות, אבטחת מידע.</div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <tr><th>שם</th><th>תפקיד</th><th>סטטוס</th><th>כניסה אחרונה</th><th>פעולות</th></tr>
+              <tr><td>סיהאם עטילה</td><td><span class="badge info">ספרנית</span></td><td><span class="badge success">פעיל</span></td><td>היום 08:30</td><td><button class="btn btn-sm btn-outline">עריכה</button></td></tr>
+              <tr><td>מנהל בית הספר</td><td><span class="badge warning">הנהלה</span></td><td><span class="badge success">פעיל</span></td><td>היום 09:00</td><td><button class="btn btn-sm btn-outline">עריכה</button></td></tr>
+              <tr><td>דניאל כהן</td><td><span class="badge neutral">תלמיד</span></td><td><span class="badge success">פעיל</span></td><td>אתמול</td><td><button class="btn btn-sm btn-outline">עריכה</button></td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AD5: הנהלה – הגדרות -->
+<div class="screen" id="ad5">
+  <div class="shell">
+    <nav class="sidebar" style="background:#3D4A2E">
+      <div class="sidebar-logo"><h1>📚 Beit Jan<br>Smart Library</h1><p>מערכת ניהול ספרייה</p></div>
+      <div class="sidebar-user"><div class="role">🏫 הנהלה</div><div class="name">מנהל בית הספר</div></div>
+      <div class="nav-section"><div class="nav-label">ראשי</div><div class="nav-item" onclick="goTo('ad1')"><span class="icon">📊</span> דשבורד</div></div>
+      <div class="nav-section"><div class="nav-label">דוחות</div>
+        <div class="nav-item" onclick="goTo('ad2')"><span class="icon">📈</span> סטטיסטיקות</div>
+        <div class="nav-item" onclick="goTo('ad3')"><span class="icon">📋</span> דוחות ניהוליים</div>
+      </div>
+      <div class="nav-section"><div class="nav-label">ניהול</div>
+        <div class="nav-item" onclick="goTo('ad4')"><span class="icon">👥</span> ניהול משתמשים</div>
+        <div class="nav-item active"><span class="icon">⚙️</span> הגדרות מערכת</div>
+      </div>
+      <div class="sidebar-footer"><button class="btn-logout" onclick="goTo('s0')">🚪 יציאה</button></div>
+    </nav>
+    <div class="main">
+      <div class="topbar">
+        <span class="topbar-title">הגדרות מערכת</span>
+        <div class="topbar-actions"><button class="lang-btn" onclick="toggleLang()">עב / ع / EN</button></div>
+      </div>
+      <div class="content">
+        <div class="note-box"><strong>📋 מסך הנהלה 5 – הגדרות:</strong> הגדרות כלליות של המערכת – ימי השאלה, כללי איחור, התראות.</div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">⚙️ כללי השאלה</div>
+            <div class="form-group"><label class="form-label">מספר ימי השאלה</label><input class="form-control" type="number" value="14"></div>
+            <div class="form-group"><label class="form-label">מספר ספרים מקסימלי לתלמיד</label><input class="form-control" type="number" value="3"></div>
+            <div class="form-group"><label class="form-label">ימי שריון עד לביטול אוטומטי</label><input class="form-control" type="number" value="2"></div>
+            <button class="btn btn-success btn-sm">💾 שמור</button>
+          </div>
+          <div class="card">
+            <div class="card-title">🔔 הגדרות התראות</div>
+            <div class="form-group"><label class="form-label">שלח תזכורת לפני החזרה (ימים)</label><input class="form-control" type="number" value="2"></div>
+            <div class="form-group"><label class="form-label">ערוץ ברירת מחדל</label>
+              <select class="form-control"><option selected>WhatsApp</option><option>SMS</option><option>מייל</option></select>
+            </div>
+            <button class="btn btn-success btn-sm">💾 שמור</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentRole = 'librarian';
+
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const target = document.getElementById(id);
+  if (target) { target.classList.add('active'); window.scrollTo(0,0); }
+}
+
+function selectRole(el, role) {
+  document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  currentRole = role;
+}
+
+function loginByRole() {
+  if (currentRole === 'student') goTo('st1');
+  else if (currentRole === 'admin') goTo('ad1');
+  else goTo('s1');
+}
+
+function showStudentFound() {
+  document.getElementById('student-result').style.display = 'block';
+}
+function showLoanSuccess() {
+  document.getElementById('loan-success').style.display = 'flex';
+}
+function selectBook(el) {
+  document.querySelectorAll('.book-card').forEach(b => b.style.borderColor = '');
+  el.style.borderColor = 'var(--accent)';
+}
+function showReservationSuccess() {
+  document.getElementById('reservation-success').style.display = 'block';
+  document.getElementById('reservation-info').style.display = 'none';
+}
+function toggleLang() {
+  const html = document.documentElement;
+  const langs = ['he','ar','en'];
+  const cur = html.lang || 'he';
+  const next = langs[(langs.indexOf(cur)+1)%langs.length];
+  html.lang = next;
+  html.dir = next === 'en' ? 'ltr' : 'rtl';
+}
+</script>
+</body>
+</html>
